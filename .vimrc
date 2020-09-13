@@ -3,20 +3,7 @@ set nocompatible   " VI compatible mode is disabled so that VIm things work
 filetype off       " Required by Vundle
 set hidden         " Allows hidden buffers https://medium.com/usevim/vim-101-set-hidden-f78800142855
 set relativenumber " Relative line numbers by default
-
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
-
-" Plugins with Vundle
-Plugin 'cespare/vim-toml'
-Plugin 'jiangmiao/auto-pairs'
-
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
+filetype plugin on
 
 " Plugins with vim-plug
 if empty(glob('~/.vim/autoload/plug.vim'))
@@ -34,7 +21,8 @@ Plug 'airblade/vim-rooter'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all'  }
 Plug 'junegunn/fzf.vim'
 Plug 'machakann/vim-highlightedyank'
-Plug 'justinmk/vim-sneak'
+Plug 'itchyny/lightline.vim'
+" Plug 'justinmk/vim-sneak'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'tpope/vim-fugitive'
 Plug 'SirVer/ultisnips'
@@ -42,6 +30,11 @@ Plug 'honza/vim-snippets'
 Plug 'mhinz/vim-startify'
 Plug 'psf/black', { 'tag': '19.10b0' }
 Plug 'vimwiki/vimwiki'
+Plug 'cespare/vim-toml'
+Plug 'preservim/nerdcommenter'
+Plug 'chriskempson/base16-vim'
+Plug 'sjl/gundo.vim'
+Plug 'mbbill/undotree'
 
 " Initialize plugin system
 call plug#end()
@@ -53,7 +46,7 @@ call plug#end()
 " Colors
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let base16colorspace=256  " Access colors present in 256 colorspace
-colorscheme base16-gruvbox-dark-pale
+colorscheme base16-black-metal
 syntax enable           " enable syntax processing
 
 " Spaces & Tabs
@@ -110,13 +103,12 @@ nnoremap / /\v
 " Leader Shortcuts
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let mapleader=" "       " leader is space
-" toggle gundo
-"nnoremap <leader>u :GundoToggle<CR>
+" toggle undotree
+nnoremap <leader>u :UndotreeToggle<CR>
 " save session
 nnoremap <leader>ms :mksession<CR>
 " Ctrl+h to stop searching
-vnoremap <leader>nh :nohlsearch<cr>
-nnoremap <leader>nh :nohlsearch<cr>
+nnoremap <ESC> :nohlsearch<cr>
 " Spellcheck
 function! ToggleSpellcheck()
     if(&spell == 1)
@@ -152,10 +144,6 @@ set foldmethod=indent   " fold based on indent level
 xnoremap <  <gv
 xnoremap >  >gv
 
-" Pathogen
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-call pathogen#infect()  " use pathogen
-
 " Bakups
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set backup
@@ -172,6 +160,21 @@ set writebackup
 " backup and writebackup enable backup support. As annoying as this can be, it
 " is much better than losing tons of work in an edited-but-not-written file.
 
+" Nerd Commenter
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Add spaces after comment delimiters by default
+let g:NERDSpaceDelims = 1
+" Use compact syntax for prettified multi-line comments
+let g:NERDCompactSexyComs = 1
+" Align line-wise comment delimiters flush left instead of following code indentation
+let g:NERDDefaultAlign = 'left'
+" Allow commenting and inverting empty lines (useful when commenting a region)
+let g:NERDCommentEmptyLines = 1
+" Enable trimming of trailing whitespace when uncommenting
+let g:NERDTrimTrailingWhitespace = 1
+" Enable NERDCommenterToggle to check all selected lines is commented or not 
+let g:NERDToggleCheckAllLines = 1
+
 " Custom functions
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -185,6 +188,13 @@ function! ToggleNumber()
 endfunc
 
 nnoremap <leader>l :call ToggleNumber()<CR>
+
+" Uncomment the following to have Vim jump to the last position when                                                       
+" " reopening a file
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
+    \| exe "normal! g'\"" | endif
+endif
 
 " Lightline
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -345,8 +355,11 @@ iabbrev ppdb import pdb; pdb.set_trace()<ESC>
 " fzf stuff
 "set rtp+=/usr/local/opt/fzf     " load fzf plugin
 nmap <Leader>e :Files<CR>
-nmap <Leader>; :Buffers<CR>
-nmap <Leader>g :Commits<CR>
+nmap <Leader>b :Buffers<CR>
+nmap <Leader>' :Commits<CR>
+nmap <Leader>h :History<CR>
+nmap <Leader>; :History:<CR>
+nmap <Leader>/ :History/<CR>
 
 "" Fix latex syntax highlight
 "augroup latexfix 
@@ -426,8 +439,8 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 nmap <leader>rn <Plug>(coc-rename)
 
 " Formatting selected code.
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
+" xmap <leader>f  <Plug>(coc-format-selected)
+" nmap <leader>f  <Plug>(coc-format-selected)
 
 augroup mygroup
   autocmd!
