@@ -35,3 +35,5 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 "   " Update signature help on jump placeholder.
 "   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 " augroup end
+
+autocmd FileType vimwiki map c :call ToggleCalendar()<CR>

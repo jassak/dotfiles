@@ -2,8 +2,7 @@ let mapleader=" "       " leader is space
 
 nnoremap <Leader>u :UndotreeToggle<CR>
 nnoremap <Leader>d :nohlsearch<CR>
-nnoremap <Leader>. :call ToggleSpellcheck()<CR>
-nnoremap <Leader>, :set invlist<CR>
+nnoremap <Leader>§ :call ToggleSpellcheck()<CR>
 nnoremap <Leader>e :CocCommand explorer --width 35<CR>
 nnoremap <Leader>l :call ToggleNumber()<CR>
 nnoremap <Leader>~ :FZF ~<CR>
@@ -29,3 +28,4 @@ nmap <Leader>a  <Plug>(coc-codeaction-selected)
 nmap <Leader>ac  <Plug>(coc-codeaction)
 nmap <Leader>af  <Plug>(coc-fix-current)
 nnoremap <silent><nowait> <Leader>aa  :<C-u>CocList diagnostics<CR>
+nmap <Leader>o :VimwikiToggleListItem<CR>
