@@ -25,4 +25,5 @@ Plug 'vimwiki/vimwiki'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'itchyny/calendar.vim'
+" Plug 'rizzatti/dash.vim'
 call plug#end()

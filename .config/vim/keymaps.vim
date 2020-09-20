@@ -23,6 +23,7 @@ vnoremap <Right> <Nop>
 vnoremap <Up> <Nop>
 xnoremap <  <gv
 xnoremap >  >gv
+nmap \\ :nohlsearch<CR>
 
 " typing in greek
 nmap Α A
