@@ -24,8 +24,12 @@ vnoremap <Up> <Nop>
 xnoremap <  <gv
 xnoremap >  >gv
 nmap \\ :nohlsearch<CR>
+nmap !! HyyP2lvLr=yyjp
+nmap !# H"aylO#b<ESC>La<space><ESC>"apyyjpkA<ESC>50a<space><Esc>H49\|"aplDH
 
-" typing in greek
+iabbr #b ==============================================
+
+" Typing in greek 
 nmap Α A
 nmap Β B
 nmap Γ G
