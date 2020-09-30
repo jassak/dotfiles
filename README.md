@@ -6,7 +6,7 @@ Set up dotfiles in new system:
 echo "alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'" >> $HOME/.bashrc
 source $HOME/.bashrc
 echo ".cfg" >> .gitignore
-git clone --bare <git-repo-url> $HOME/.cfg
+git clone --bare https://github.com/jassak/dotfiles.git $HOME/.cfg
 config config --local status.showUntrackedFiles no
 config checkout
 ```
