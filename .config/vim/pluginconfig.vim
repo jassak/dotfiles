@@ -1,4 +1,18 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ale
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:ale_disable_lsp = 1
+let g:ale_sign_error = '➤'
+let g:ale_sign_warning = '⤑'
+highlight ALEError ctermbg=red cterm=underline
+highlight ALEError ctermbg=none cterm=underline
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" vimwiki
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:vimwiki_map_prefix = '<Leader>v'
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim-gitgutter
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set updatetime=100
@@ -33,6 +47,9 @@ let g:lightline = {
       \ },
       \ }
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" coc
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " coc-explorer
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -75,28 +92,43 @@ let g:coc_explorer_global_presets = {
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " coc-snippets
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"" Use <C-l> for trigger snippet expand.
-imap <C-l> <Plug>(coc-snippets-expand)
+" Use <C-l> for trigger snippet expand.
+imap <Right> <Plug>(coc-snippets-expand)
 
-"" Use <C-j> for select text for visual placeholder of snippet.
-vmap <C-j> <Plug>(coc-snippets-select)
+" Use <C-j> for select text for visual placeholder of snippet.
+vmap <Down> <Plug>(coc-snippets-select)
 
-"" Use <Down> for jump to next placeholder, it's default of coc.nvim
+" Use <C-j> for jump to next placeholder, it's default of coc.nvim
 let g:coc_snippet_next = '<Down>'
 
-"" Use <Up> for jump to previous placeholder, it's default of coc.nvim
+" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
 let g:coc_snippet_prev = '<Up>'
 
-"" Use <C-j> for both expand and jump (make expand higher priority.)
-imap <C-j> <Plug>(coc-snippets-expand-jump)
+" Use <C-j> for both expand and jump (make expand higher priority.)
+imap <Down> <Plug>(coc-snippets-expand-jump)
 
+" Make <tab> used for trigger completion, completion confirm, snippet expand
+" and jump like VSCode.
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? coc#_select_confirm() :
       \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
       \ <SID>check_back_space() ? "\<TAB>" :
       \ coc#refresh()
 
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
 let g:coc_snippet_next = '<tab>'
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ultisnips
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Trigger configuration. You need to change this to something else than <tab> if you use https://github.com/Valloric/YouCompleteMe.
+" let g:UltiSnipsExpandTrigger="<CR>"
+" let g:UltiSnipsJumpForwardTrigger="<Down>"
+" let g:UltiSnipsJumpBackwardTrigger="<Up>"
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " startify
@@ -138,6 +170,7 @@ colorscheme base16-ocean
 " undotree
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:undotree_SplitWidth=35
+let g:undotree_WindowLayout=2
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim-markdown

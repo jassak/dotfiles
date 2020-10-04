@@ -7,7 +7,7 @@ source ~/.config/vim/settings.vim
 source ~/.config/vim/keymaps.vim
 source ~/.config/vim/plugininstall.vim
 source ~/.config/vim/pluginconfig.vim
-source ~/.config/vim/functions.vim
 source ~/.config/vim/autocommands.vim
 source ~/.config/vim/pluginkeymaps.vim
 source ~/.config/vim/leaderkeymaps.vim
+source ~/.config/vim/functions.vim

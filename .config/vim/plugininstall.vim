@@ -5,11 +5,11 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 call plug#begin('~/.vim/plugged')
 " Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 Plug 'airblade/vim-gitgutter'
 Plug 'airblade/vim-rooter'
 Plug 'cespare/vim-toml'
 Plug 'chriskempson/base16-vim'
-"Plug 'honza/vim-snippets'
 Plug 'itchyny/lightline.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all'  }
 Plug 'junegunn/fzf.vim'
@@ -25,5 +25,18 @@ Plug 'vimwiki/vimwiki'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'itchyny/calendar.vim'
-" Plug 'rizzatti/dash.vim'
+Plug 'rizzatti/dash.vim'
+Plug 'dense-analysis/ale'
+" coc extensions: install with CocInstall ...
+" coc-r-lsp
+" coc-python
+" coc-snippets
+" coc-json
+" coc-explorer
+" coc-sh
+" coc-sql
+" coc-texlab
+" coc-vimlsp
+" coc-rls
+" coc-markdownlint
 call plug#end()

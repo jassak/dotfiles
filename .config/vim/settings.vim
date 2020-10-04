@@ -3,16 +3,17 @@ syntax enable                        " enable syntax processing
 set backup
 set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set backupskip=/tmp/*,/private/tmp/*
+set writebackup
 set conceallevel=2                   " prettifies markdown 
+set cmdheight=2                      " Give more space for displaying messages
 set cursorline                       " highlight current line
 set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set history=500		                 " keep 500 lines of command line history
 set foldenable                       " enable folding
-set foldlevelstart=0                 " most folds closed by default
+set foldlevelstart=2                 " most folds closed by default
 set foldmethod=indent                " fold based on indent level
 set foldnestmax=10                   " 10 nested fold max
 set hidden                           " allows hidden buffers
-set hlsearch                         " highlight matches
 set ignorecase                       " ignore case in searches by default
 set incsearch                        " search as characters are entered
 set laststatus=2                     " show the status line at the bottom
@@ -35,6 +36,9 @@ set tabstop=4 shiftwidth=4 expandtab " 4 spaces instead of tabs
 set ttyfast                          " optimize for fast terminal connections
 set undodir=~/.vimdid                " permanent undo
 set undofile
+set undolevels=2000                  " huge undo because why not
 set updatetime=100
 set wildmenu                         " visual autocomplete for command menu
-set writebackup
+
+set langmap=ΑA,ΒB,ΨC,ΔD,ΕE,ΦF,ΓG,ΗH,ΙI,ΞJ,ΚK,ΛL,ΜM,ΝN,ΟO,ΠP,QQ,ΡR,ΣS,ΤT,ΘU,ΩV,WW,ΧX,ΥY,ΖZ,αa,βb,ψc,δd,εe,φf,γg,ηh,ιi,ξj,κk,λl,μm,νn,οo,πp,qq,ρr,σs,τt,θu,ωv,ςw,χx,υy,ζz
+
