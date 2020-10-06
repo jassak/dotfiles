@@ -1,72 +1,8 @@
--- Resize to left of screen
-hs.hotkey.bind({"alt", "shift"}, "H", function()
-  local win = hs.window.focusedWindow()
-  local f = win:frame()
-  local screen = win:screen()
-  local max = screen:frame()
+-- Required for hs (hammerspoon in the terminal)
+require("hs.ipc")
+require("winman")
+require("mocha")
 
-  f.x = max.x
-  f.y = max.y
-  f.w = max.w / 2
-  f.h = max.h
-  win:setFrame(f)
-end)
-
--- Resize to right of screen
-hs.hotkey.bind({"alt", "shift"}, "L", function()
-  local win = hs.window.focusedWindow()
-  local f = win:frame()
-  local screen = win:screen()
-  local max = screen:frame()
-
-  f.x = max.x + (max.w / 2)
-  f.y = max.y
-  f.w = max.w / 2
-  f.h = max.h
-  win:setFrame(f)
-end)
-		
--- Resize to top of screen
-hs.hotkey.bind({"alt", "shift"}, "K", function()
-  local win = hs.window.focusedWindow()
-  local f = win:frame()
-  local screen = win:screen()
-  local max = screen:frame()
-
-  f.x = max.x 
-  f.y = max.y
-  f.w = max.w
-  f.h = max.h / 2
-  win:setFrame(f)
-end)
-		
--- Resize to bottom of screen
-hs.hotkey.bind({"alt", "shift"}, "J", function()
-  local win = hs.window.focusedWindow()
-  local f = win:frame()
-  local screen = win:screen()
-  local max = screen:frame()
-
-  f.x = max.x
-  f.y = max.y + (max.h / 2)
-  f.w = max.w
-  f.h = max.h / 2
-  win:setFrame(f)
-end)
-		
--- Resize to full screen
-hs.hotkey.bind({"alt", "shift"}, "F", function()
-  local win = hs.window.focusedWindow()
-  local f = win:frame()
-  local screen = win:screen()
-  local max = screen:frame()
-
-  f.x = max.x
-  f.y = max.y
-  f.w = max.w
-  f.h = max.h
-  win:setFrame(f)
-end)
 
 -- Auroreload config on save
 function reloadConfig(files)
@@ -80,6 +16,29 @@ function reloadConfig(files)
         hs.reload()
     end
 end
-myWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
+configWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
 hs.alert.show("Config loaded")
 
+-- Alert for new mail
+function mailAlert(files, flagTables)
+    -- hs.alert.show(hs.inspect(flagTables))
+    -- if flagTables[1].itemCreated then
+    hs.sound.getByName(hs.sound.systemSounds()[1]):play()
+    hs.notify.new({title="New Mail"}):send()
+    -- end
+end
+gmailWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/Mail/gmail/Inbox/new/", mailAlert):start()
+fastmailWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/Mail/fastmail/Inbox/new/", mailAlert):start()
+athenaMailWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/Mail/athenarc/Inbox/new/", mailAlert):start()
+uoaMailWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/Mail/uoa/Inbox/new/", mailAlert):start()
+
+-- Rearange windows to screens
+hs.hotkey.bind({"cmd", "alt", "ctrl"}, "W", function()
+    local laptopScreen = "Color LCD"
+    local dellScreen = "DELL U2719DC"
+    local windowLayout = {
+        {"Slack", nil, laptopScreen, hs.layout.maximized, nil, nil},
+        {"Firefox", nil, dellScreen, hs.layout.maximized, nil, nil},
+    }
+    hs.layout.apply(windowLayout)
+end)
