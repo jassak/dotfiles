@@ -10,7 +10,7 @@ set cursorline                       " highlight current line
 set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set history=500		                 " keep 500 lines of command line history
 set foldenable                       " enable folding
-set foldlevelstart=2                 " most folds closed by default
+set foldlevelstart=4                 " most folds closed by default
 set foldmethod=indent                " fold based on indent level
 set foldnestmax=10                   " 10 nested fold max
 set hidden                           " allows hidden buffers
