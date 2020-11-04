@@ -50,3 +50,14 @@ function! ToggleCalendar()
   end
 endfunction
 
+" " 1+1
+" function! EvalSelectedExpression()
+"     try
+"         let a_save = @a
+"         let b_save = @b
+"         normal! gv"ay
+"         :!bc <<< "a"<CR>
+"     finally
+"         let @a = a_save
+"     endtry
+" endfunction

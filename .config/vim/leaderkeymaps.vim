@@ -11,25 +11,30 @@ nmap <Leader>f :Files<CR>
 nmap <Leader>g :Commits<CR>
 map <Leader>h :History<CR>
 nnoremap <Leader>l :call ToggleNumber()<CR>
-nmap <Leader>o :VimwikiToggleListItem<CR>
 noremap <Leader>P "*P
 noremap <Leader>p "+p
 nmap <Leader>q :q<CR>
 nmap <Leader>rn <Plug>(coc-rename)
-nmap <Leader>rr :source ~/.vimrc<CR>
+nmap <Leader>rc :source ~/.vimrc<CR>
 nmap <Leader>s :w<CR>
-nnoremap <silent><Leader>t :CocCommand explorer --width 35<CR>
+if has('nvim')
+    nnoremap <silent><Leader>t :split term://zsh<CR>i
+    nnoremap <Leader>m :split term://mutt<CR>i
+else
+    nnoremap <silent><Leader>t :terminal ++close<CR>
+    nnoremap <Leader>m :terminal ++close mutt<CR>
+endif
 nnoremap <silent><Leader>u :UndotreeToggle<CR>
-nmap <Leader>vha :VimwikiAll2HTML<CR>
+nmap <Leader>wha :VimwikiAll2HTML<CR>
 nmap <Leader>x :x<CR>
 map <Leader>Y "+Y
 noremap <Leader>y "+y
 
-nmap <Leader><Leader> <C-^>
+nnoremap <Leader><Leader> za
+xnoremap <Leader><Leader> zf
 nnoremap <Leader>§ :call ToggleSpellcheck()<CR>
 nnoremap <Leader>~ :FZF ~<CR>
 nmap <Leader>; :History:<CR>
 nmap <Leader>/ :History/<CR>
-" Formatting selected code.
 xmap <leader>=  <Plug>(coc-format-selected)
 nmap <leader>=  <Plug>(coc-format-selected)

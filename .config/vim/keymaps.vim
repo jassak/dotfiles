@@ -1,16 +1,19 @@
-inoremap <Up> <Nop>
-inoremap <Down> <Nop>
-inoremap <Left> <Nop>
-inoremap <Right> <Nop>
-nnoremap <Up> <Nop>
-nnoremap <Down> <Nop>
+inoremap <Up> <C-K>
+inoremap <Down> <C-J>
+inoremap <Left> <BS>
+inoremap <BS> <nop>
+xnoremap <BS> <nop>
+" inoremap <Right> <Nop>
+nnoremap <Up> mmgUiw`m
+nnoremap <Down> mmguiw`m
 nnoremap <Left> :bp<CR>
-nnoremap <Right> :bn<CR>
+nnoremap <right> :bn<CR>
 nnoremap <Silent> # #zz
 nnoremap <Silent> * *zz
 nnoremap <Silent> N Nzz
 nnoremap <Silent> g* g*zz
 nnoremap <Silent> n nzz
+nnoremap <BS> <C-^>
 nnoremap <CR> @@
 nnoremap H ^
 nnoremap L $
@@ -23,30 +26,62 @@ vnoremap <Right> <Nop>
 vnoremap <Up> <Nop>
 xnoremap <  <gv
 xnoremap >  >gv
-xmap <F5> y:Dash <C-r>"<CR>
-nmap <F5> :Dash<CR>
-nmap \\ :nohlsearch<CR>
+xnoremap <F5> y:Dash <C-r>"<CR>
+nnoremap <F5> :Dash<CR>
+nnoremap \\ :nohlsearch<CR>
 " stolen from tpope's vim-impraired
-nmap [a :previous<cr>
-nmap ]a :next<cr>
-nmap [A :first<cr>
-nmap ]A :last<cr>
-nmap [b :bprevious<cr>
-nmap ]b :bnext<cr>
-nmap [B :bfirst<cr>
-nmap ]B :blast<cr>
-nmap [t :tprevious<cr>
-nmap ]t :tnext<cr>
-nmap [T :tfirst<cr>
-nmap ]T :tlast<cr>
-nmap [A :first<cr>
-nmap ]A :last<cr>
-nmap [e ddkP
-nmap ]e ddp
-xmap [e dkP`]V`[
-xmap ]e dp`]V`[
-" comment related FIXME
-nmap !! HyyP2lvLr=yyjp
-nmap !# H"aylO#b<ESC>La<space><ESC>"apyyjpkA<ESC>50a<space><Esc>H49\|"aplDH
+nnoremap [a :previous<cr>
+nnoremap ]a :next<cr>
+nnoremap [A :first<cr>
+nnoremap ]A :last<cr>
+nnoremap [b :bprevious<cr>
+nnoremap ]b :bnext<cr>
+nnoremap [B :bfirst<cr>
+nnoremap ]B :blast<cr>
+nnoremap [t :tprevious<cr>
+nnoremap ]t :tnext<cr>
+nnoremap [T :tfirst<cr>
+nnoremap ]T :tlast<cr>
+nnoremap [A :first<cr>
+nnoremap ]A :last<cr>
+nnoremap [e ddkP
+nnoremap ]e ddp
+xnoremap [e dkP`]V`[
+xnoremap ]e dp`]V`[
+nnoremap [<space> O<ESC>j
+nnoremap ]<space> o<ESC>k
+" comment related
+nnoremap !! O <esc>60i-<esc>j^ylk^Pa <esc>yyjp
+" Undo points (stolen from https://github.com/dbmrq/dotfiles/blob/master/home/.vim/mappings.vim)
+inoremap . .<C-g>u
+inoremap , ,<C-g>u
+inoremap ; ;<C-g>u
+inoremap ! !<C-g>u
+inoremap ? ?<C-g>u
+inoremap : :<C-g>u
+" surrounds
+nnoremap <leader>" viw<esc>a"<esc>bi"<esc>lel
+nnoremap <leader>' viw<esc>a'<esc>bi'<esc>lel
+nnoremap <leader>( viw<esc>a)<esc>bi(<esc>lel
+nnoremap <leader>[ viw<esc>a]<esc>bi[<esc>lel
+nnoremap <leader>{ viw<esc>a}<esc>bi{<esc>lel
+nnoremap ∂ yyp
+xnoremap ∂ yg`]p
+" paste in visual mode
+vnoremap p "_dP
 
-iabbr #b ==============================================
+if has('nvim')
+    tnoremap <C-[><C-[> <C-\><C-n>
+    tnoremap ˙ <C-\><C-N><C-w>h
+    tnoremap ∆ <C-\><C-N><C-w>j
+    tnoremap ˚ <C-\><C-N><C-w>k
+    tnoremap ¬ <C-\><C-N><C-w>l
+    inoremap ˙ <C-\><C-N><C-w>h
+    inoremap ∆ <C-\><C-N><C-w>j
+    inoremap ˚ <C-\><C-N><C-w>k
+    inoremap ¬ <C-\><C-N><C-w>l
+    nnoremap ˙ <C-w>h
+    nnoremap ∆ <C-w>j
+    nnoremap ˚ <C-w>k
+    nnoremap ¬ <C-w>l
+endif

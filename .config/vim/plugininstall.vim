@@ -19,7 +19,7 @@ Plug 'mbbill/undotree'
 Plug 'mhinz/vim-startify'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'preservim/nerdcommenter'
-Plug 'psf/black', { 'tag': '19.10b0' }
+" Plug 'psf/black', { 'tag': '19.10b0' }
 Plug 'tpope/vim-fugitive'
 Plug 'vimwiki/vimwiki'
 Plug 'godlygeek/tabular'
@@ -27,6 +27,11 @@ Plug 'plasticboy/vim-markdown'
 Plug 'itchyny/calendar.vim'
 Plug 'rizzatti/dash.vim'
 Plug 'dense-analysis/ale'
+Plug 'tmhedberg/SimpylFold'
+Plug 'jpalardy/vim-slime'
+Plug 'vim-python/python-syntax'
+Plug 'preservim/tagbar'
+" Plug 'Konfekt/FastFold' TODO check this out
 " coc extensions: install with CocInstall ...
 " coc-r-lsp
 " coc-python

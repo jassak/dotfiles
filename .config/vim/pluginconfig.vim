@@ -10,7 +10,7 @@ highlight ALEError ctermbg=none cterm=underline
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " vimwiki
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:vimwiki_map_prefix = '<Leader>v'
+let g:vimwiki_map_prefix = '<Leader>w'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim-gitgutter
@@ -37,10 +37,16 @@ let g:fzf_layout = { 'down': '40%' }
 " lightline
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:lightline = {
-      \ 'colorscheme': 'seoul256',
+      \ 'colorscheme': '16color',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ],
+      \   'right': [ [ 'lineinfo' ],
+      \              [ 'percent' ],
+      \              [ 'fileformat', 'fileencoding', 'filetype', 'charvaluehex' ] ]
+      \ },
+      \ 'component': {
+      \   'charvaluehex': '0x%B'
       \ },
       \ 'component_function': {
       \   'gitbranch': 'FugitiveHead'
@@ -53,6 +59,7 @@ let g:lightline = {
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " coc-explorer
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+nmap <silent> <F2> :CocCommand explorer --width 35 --position right<CR> 
 let g:coc_explorer_global_presets = {
 \   '.vim': {
 \     'root-uri': '~/.vim',
@@ -96,16 +103,16 @@ let g:coc_explorer_global_presets = {
 imap <Right> <Plug>(coc-snippets-expand)
 
 " Use <C-j> for select text for visual placeholder of snippet.
-vmap <Down> <Plug>(coc-snippets-select)
+" vmap <Down> <Plug>(coc-snippets-select)
 
 " Use <C-j> for jump to next placeholder, it's default of coc.nvim
-let g:coc_snippet_next = '<Down>'
+" let g:coc_snippet_next = '<Down>'
 
 " Use <C-k> for jump to previous placeholder, it's default of coc.nvim
-let g:coc_snippet_prev = '<Up>'
+" let g:coc_snippet_prev = '<Up>'
 
 " Use <C-j> for both expand and jump (make expand higher priority.)
-imap <Down> <Plug>(coc-snippets-expand-jump)
+" imap <Down> <Plug>(coc-snippets-expand-jump)
 
 " Make <tab> used for trigger completion, completion confirm, snippet expand
 " and jump like VSCode.
@@ -187,3 +194,49 @@ let g:markdown_fenced_languages = [
     \ 'yaml',
     \ 'go',
 \]
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" SimpylFold
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:SimpylFold_docstring_preview = 1
+let g:SimpylFold_fold_import = 1
+
+" ------------------------------------------------------------ 
+" vim-slime
+" ------------------------------------------------------------ 
+let g:slime_paste_file = "$HOME/.slime_paste"
+let g:slime_no_mappings = 1
+let g:slime_python_ipython = 1
+
+xmap <c-c><c-c> <Plug>SlimeRegionSend
+nmap <c-c><c-c> <Plug>SlimeParagraphSend
+nmap <c-c>v   <Plug>SlimeConfig
+
+let g:slime_target = "vimterminal"
+
+" ------------------------------------------------------------ 
+" python-syntax
+" ------------------------------------------------------------ 
+let g:python_highlight_builtins = 1
+let g:python_highlight_builtin_objs = 1
+let g:python_highlight_builtin_types = 1
+let g:python_highlight_builtin_funcs = 1
+let g:python_highlight_builtin_funcs_kwarg = 1
+let g:python_highlight_exceptions = 1
+let g:python_highlight_string_formatting = 1
+let g:python_highlight_string_format = 1
+let g:python_highlight_string_templates = 1
+let g:python_highlight_indent_errors = 1
+let g:python_highlight_space_errors = 1
+let g:python_highlight_doctests = 1
+let g:python_highlight_func_calls = 1
+let g:python_highlight_class_vars = 0
+let g:python_highlight_operators = 1
+let g:python_highlight_file_headers_as_comments = 1
+
+" ------------------------------------------------------------ 
+" tagbar
+" ------------------------------------------------------------ 
+let g:tagbar_position = 'leftabove vertical'
+let g:tagbar_width = max([25, winwidth(0) / 5])
+nmap <silent> <F1> :TagbarToggle<CR>

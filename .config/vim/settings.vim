@@ -10,9 +10,10 @@ set cursorline                       " highlight current line
 set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set history=500		                 " keep 500 lines of command line history
 set foldenable                       " enable folding
-set foldlevelstart=4                 " most folds closed by default
-set foldmethod=indent                " fold based on indent level
-set foldnestmax=10                   " 10 nested fold max
+set foldlevelstart=0                 " most folds closed by default
+" set foldmethod=indent                " folds defined manually
+" set foldnestmax=2                    " 2 nested fold max (classes and methods)
+set foldcolumn=4                     " show folds on signcolumn
 set hidden                           " allows hidden buffers
 set ignorecase                       " ignore case in searches by default
 set incsearch                        " search as characters are entered
@@ -39,6 +40,8 @@ set undofile
 set undolevels=2000                  " huge undo because why not
 set updatetime=100
 set wildmenu                         " visual autocomplete for command menu
+set t_ZH=[3m                       " correctly render italics
+set t_ZR=[23m                      " correctly render italics
 
 set langmap=ΑA,ΒB,ΨC,ΔD,ΕE,ΦF,ΓG,ΗH,ΙI,ΞJ,ΚK,ΛL,ΜM,ΝN,ΟO,ΠP,QQ,ΡR,ΣS,ΤT,ΘU,ΩV,WW,ΧX,ΥY,ΖZ,αa,βb,ψc,δd,εe,φf,γg,ηh,ιi,ξj,κk,λl,μm,νn,οo,πp,qq,ρr,σs,τt,θu,ωv,ςw,χx,υy,ζz
 
