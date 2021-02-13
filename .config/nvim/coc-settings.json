@@ -1,0 +1,18 @@
+{
+    "codeLens.enable": true,
+    "diagnostic.enable": true,
+    "diagnostic.level": "error",
+    "diagnostic.virtualText": true,
+    "diagnostic.virtualTextCurrentLineOnly": true,
+    "explorer.icon.enableNerdfont": true,
+    "explorer.width": 40,
+    "prettier.tabWidth": 4,
+    "prettier.trailingComma": "all",
+    "python.formatting.blackPath": "/Users/zazon/.local/bin/black",
+    "python.formatting.provider": "black",
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Path": "/Users/zazon/.local/bin/flake8",
+    "python.linting.lintOnSave": true,
+    "python.venvPath": "~/.virtualenvs/"
+}
