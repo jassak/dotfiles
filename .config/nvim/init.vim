@@ -6,38 +6,40 @@ let g:python_host_prog = '/Users/zazon/.virtualenvs/py2nvim/bin/python'
 " {{{1 Settings
 filetype indent plugin on            " load filetype-specific indent and plugin files
 syntax enable                        " enable syntax processing
+set exrc                             " allows running local rc files
+set secure                           " dissalows unsecure commands in local files
 set nomodeline                       " disables scanning for ex: vi: vim:
 set conceallevel=2                   " prettifies markdown
 set cmdheight=2                      " Give more space for displaying messages
 set cursorline                       " highlight current line
-set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
-set history=500		                 " keep 500 lines of command line history
+set history=1000		             " keep 500 lines of command line history
+set formatoptions-=cro               " disable automatic comment leader insertion
 set foldenable                       " enable folding
-set foldlevelstart=0                 " most folds open by default
+set foldlevelstart=0                 " most folds closed by default
 set foldmethod=marker                " folds defined manually
-" set foldnestmax=2                    " 2 nested fold max (classes and methods)
 set foldcolumn=0                     " show folds on signcolumn
 set hidden                           " allows hidden buffers
 set ignorecase                       " ignore case in searches by default
 set incsearch                        " search as characters are entered
+set smartcase                        " but make it case sensitive if an uppercase is entered
 set nohlsearch                       " no highlight search (check https://github.com/haya14busa/incsearch.vim)
 set laststatus=2                     " show the status line at the bottom
-" set lazyredraw                       " redraw only when we need to.
 set listchars=tab:▸\ ,eol:¬,extends:»,precedes:«,trail:•,nbsp:⎵
 set noerrorbells visualbell t_vb=    " disable annoying error noises
 set noshowmode                       " don't need since we have statusline
 set number                           " show line numbers
-set relativenumber                   " relative line numbers by default
+" set relativenumber                   " relative line numbers by default
 set scrolloff=8                      " keep action in middle of screen
 set shortmess+=c                     " don't pass messages to |ins-completion-menu|.
 set showcmd                          " show command in bottom bar
 set showmatch                        " highlight matching [{()}]
 set signcolumn=yes                   " always draw sign column
-set smartcase                        " but make it case sensitive if an uppercase is entered
 set splitbelow                       " open new vertical split bottom
 set splitright                       " open new horizontal splits right
 set tabstop=4 shiftwidth=4 expandtab " 4 spaces instead of tabs
 set ttyfast                          " optimize for fast terminal connections
+set noswapfile
+set nobackup
 set undodir=~/.vimdid                " permanent undo
 set undofile
 set undolevels=2000                  " huge undo because why not
@@ -65,16 +67,16 @@ nnoremap <Silent> * *zz
 nnoremap <Silent> N Nzz
 nnoremap <Silent> g* g*zz
 nnoremap <Silent> n nzz
-" nnoremap <Silent> ]] ]]zz
-" nnoremap <Silent> [[ [[zz
-" nnoremap <Silent> [] []zz
-" nnoremap <Silent> ][ ][zz
-" nnoremap <Silent> ]m ]mzz
-" nnoremap <Silent> [m [mzz
-" nnoremap <Silent> ]M ]Mzz
-" nnoremap <Silent> [M [Mzz
-nnoremap <BS> <C-^>
+nnoremap <Silent> ]] ]]zz
+nnoremap <Silent> [[ [[zz
+nnoremap <Silent> [] []zz
+nnoremap <Silent> ][ ][zz
+nnoremap <Silent> ]m ]mzz
+nnoremap <Silent> [m [mzz
+nnoremap <Silent> ]M ]Mzz
+nnoremap <Silent> [M [Mzz
 nnoremap <CR> @@
+nnoremap <BS> <C-^>
 nnoremap H ^
 nnoremap L $
 vnoremap H ^
@@ -112,6 +114,7 @@ tnoremap ç <C-\><C-N>:close<CR>
 nnoremap ç :close<CR>
 tnoremap œ <C-\><C-n>:bd!<CR>
 nnoremap œ <C-\><C-n>:bd!<CR>
+tnoremap <silent>∑ <C-\><C-n>:CocCommand terminal.Toggle<CR>
 
 " {{{2 leader keymaps
 let mapleader=" "       " leader is space
@@ -121,11 +124,15 @@ nnoremap <leader><Leader> za
 nnoremap <leader>c :cw<CR>
 nnoremap <leader>e :GFiles<CR>
 nnoremap <leader>f :Files<CR>
-nnoremap <leader>g :Commits<CR>
+nnoremap <leader>gg :Commits<CR>
+nnoremap <leader>gs :Git<CR>
+nnoremap <leader>gf :diffget //2<CR>
+nnoremap <leader>gj :diffget //3<CR>
 nnoremap <leader>h :History<CR>
 nnoremap <leader>l :call ToggleNumber()<CR>
-nnoremap <leader>m :split term://mutt<CR>i
-nnoremap <leader>rc :source ~/.vimrc<CR>
+nnoremap <leader>m :MaximizerToggle<CR>
+nnoremap <leader>r :CocCommand terminal.REPL<CR>
+" nnoremap <leader>rc :source ~/.vimrc<CR>
 nnoremap <leader>us :UltiSnipsEdit<CR>
 nnoremap <leader>ut :UndotreeToggle<CR>
 nnoremap <leader>~ :FZF ~<CR>
@@ -136,8 +143,9 @@ nnoremap <leader>3 :set spelllang=fr<cr>
 nnoremap <leader>q :q<CR>
 nnoremap <leader>w :w<CR>
 nnoremap <leader>x :x<CR>
-nnoremap <silent><leader>t :split term://zsh<CR>i
-nnoremap <silent><leader>vt :vsplit term://zsh<CR>i
+" nnoremap <silent><leader>t :split term://zsh<CR>i
+nnoremap <silent><leader>t :CocCommand terminal.Toggle<CR>
+nmap <silent><leader>vt :vsplit term://zsh<CR>i
 noremap <leader>P "+P
 noremap <leader>Y "+Y
 noremap <leader>p "+p
@@ -145,6 +153,26 @@ noremap <leader>y "+y
 noremap <silent><leader>z :Goyo<CR>
 xnoremap <Leader><leader> zf
 xnoremap <leader>= y`>a = ^R=^R"<Cr><ESC>
+
+" {{{3 Vimspector
+" General
+nnoremap <leader>dd :call vimspector#Launch()<CR>
+nnoremap <leader>dq :call vimspector#Reset()<CR>
+nmap <leader>d<BS> <Plug>VimspectorRestart
+" Motions
+nmap <leader>d<space> <Plug>VimspectorStepOver
+nmap <leader>di <Plug>VimspectorStepIn
+nmap <leader>do <Plug>VimspectorStepOut
+nmap <leader>drc <Plug>VimspectorRunToCursor
+nnoremap <leader>dc :call vimspector#Continue()<CR>
+" Breakpoints
+nmap <leader>db <Plug>VimspectorToggleBreakpoint
+nmap <leader>dcb <Plug>VimspectorToggleConditionalBreakpoint
+nmap <leader>dxb :call vimspector#ClearBreakpoints()<CR>
+" Eval
+nnoremap <leader>de :VimspectorEval<space>
+nnoremap <leader>dw :VimspectorWatch<space>
+" }}}
 
 function! ToggleSpellcheck()
     if(&spell == 1)
@@ -167,6 +195,7 @@ endfunc
 " mip algos stdout
 tnoremap ø import sys; sys.stdout = sys.__stdout__
 iabbrev pdb __import__('pdb').set_trace()
+iabbrev improt import
 " }}}1
 
 " {{{1 Plugins Install
@@ -194,7 +223,9 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
 Plug 'plasticboy/vim-markdown'
 Plug 'preservim/tagbar'
+Plug 'puremourning/vimspector'
 Plug 'rizzatti/dash.vim'
+Plug 'szw/vim-maximizer'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
@@ -347,8 +378,15 @@ let g:goyo_width=90
 let g:goyo_height=110
 " }}}
 
+" {{{2 vimspector
+
+" }}}
+
 " {{{2 coc.nvim
-let g:coc_global_extensions = ['coc-explorer', 'coc-snippets', 'coc-pyright', 'coc-json', 'coc-prettier', 'coc-diagnostic']
+let g:coc_global_extensions = ['coc-explorer', 'coc-snippets', 'coc-pyright',
+            \   'coc-json', 'coc-prettier', 'coc-diagnostic', 'coc-sql',
+            \   'coc-vimlsp', 'coc-html', 'coc-marketplace', 'coc-terminal',
+            \   'coc-lua']
 
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
@@ -531,7 +569,6 @@ autocmd! User GoyoLeave nested call <SID>goyo_leave()
 " {{{2 Python
 augroup filetype_py
     autocmd!
-    " autocmd Syntax python :syn keyword Keyword self
     autocmd FileType python set colorcolumn=89
     autocmd FileType python nnoremap <buffer> <LocalLeader>r :w<CR>:split term://python %<CR>i
     autocmd FileType python nnoremap <buffer> <LocalLeader>d :w<CR>:split term://python -m pdb %<CR>i
@@ -544,7 +581,10 @@ augroup filetype_py
     autocmd FileType python nnoremap <buffer> <LocalLeader>vi :w<CR>:vsplit term://ipython -i %<CR>i
     autocmd FileType python nnoremap <buffer> <LocalLeader>vs :w<CR>:vsplit term://python -i %<CR>i
     autocmd FileType python nnoremap <buffer> <LocalLeader>c :call PasteCommentBox()<CR>
-    autocmd FileType python nnoremap <buffer> <LocalLeader>f :Format<CR>
+    autocmd FileType python nnoremap <buffer> <LocalLeader>f :Format<CR>:CocCommand pyright.organizeimports<CR>
+    autocmd FileType python set foldmethod=indent
+    autocmd FileType python set foldlevelstart=99
+    autocmd FileType python set foldlevel=99
 augroup END
 " }}}
 
@@ -581,7 +621,7 @@ augroup END
 
 " {{{2 Racket
 function! RacketRepl()
-  execute ":vsplit term://racket"
+  execute ":split term://racket"
     try
         let a_save = @a
         let @a = "(enter! \"" . bufname("#") . "\")"
@@ -621,7 +661,16 @@ augroup END
 augroup filetype_ocaml
     autocmd!
     autocmd BufNewFile,BufRead *.ml nnoremap <buffer> <localleader>r :split term://utop<CR>i
-    autocmd BufNewFile,BufRead *.ml xnoremap <buffer> <localleader>r y:split term://utop<CR>
+    " autocmd BufNewFile,BufRead *.ml xnoremap <buffer> <localleader>r y:split term://utop<CR>
+augroup END
+" }}}
+
+" {{{2 Haskell
+augroup filetype_hs
+    autocmd!
+    autocmd FileType haskell nnoremap <buffer> <LocalLeader>s :w<CR>:12split term://ghci %<CR>i
+    autocmd FileType haskell nnoremap <buffer> <LocalLeader>f :%!hindent<CR>
+    " autocmd FileType haskell nnoremap <buffer> <LocalLeader>s :w<CR>:CocCommand terminal.Toggle<CR>ghci %<CR>i
 augroup END
 " }}}
 
@@ -646,8 +695,9 @@ augroup END
 " }}}
 " }}}
 
-
+" {{{1 Highlight
 highlight Comment cterm=italic
 hi semshiParameter ctermfg=75  guifg=#5fafff cterm=italic gui=italic
 hi semshiFree      ctermfg=218 guifg=#ffafd7 cterm=italic gui=italic
 hi semshiParameterUnused ctermfg=117 guifg=#87d7ff cterm=underline,italic gui=underline
+" }}}
