@@ -1,6 +1,8 @@
 * Emacs Installation
+** Macos
   =brew install emacs-plus@28 --with-modern-papirus-icon --with-xwidgets --with-mailutils=
-* Customizations 
+  =ln -s /usr/local/opt/emacs-plus@28/Emacs.app /Applications=
+* Settings 
 ** spacemacs-theme
    #+begin_src emacs-lisp
      (use-package spacemacs-theme
@@ -54,18 +56,51 @@
    #+begin_src emacs-lisp
      (global-prettify-symbols-mode t)
    #+end_src
+** ibuffer expert mode
+   #+begin_src emacs-lisp
+     (setq ibuffer-expert t)
+   #+end_src
+** config edit/reload
+*** edit
+   #+begin_src emacs-lisp
+     (defun config-visit ()
+       (interactive)
+       (find-file "~/.emacs.d/config.org"))
+     (global-set-key (kbd "C-c e") 'config-visit)
+   #+end_src
+*** reload
+    #+begin_src emacs-lisp
+      (defun config-reload ()
+        (interactive)
+        (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
+      (global-set-key (kbd "C-c r") 'config-reload)
+    #+end_src
 * Keybindings
 *** other-window
     #+begin_src emacs-lisp
-      (windmove-default-keybindings)
       (global-set-key (kbd "M-o") 'other-window)
     #+end_src
+*** buffer switching
+   #+begin_src emacs-lisp
+     (global-set-key (kbd "C-x b") 'ido-switch-buffer)
+     (global-set-key (kbd "C-x C-b") 'ibuffer)
+   #+end_src
 * IDO
+** enable IDO mode
   #+begin_src emacs-lisp
-    (ido-mode 1)
-    (setq ido-enabel-flex-matching t)
+    (setq ido-enable-flex-matching t)
+    (setq ido-create-new-buffer 'always)
     (setq ido-everywhere t)
+    (ido-mode 1)
   #+end_src
+** ido-vertical
+   #+begin_src emacs-lisp
+     (use-package ido-vertical-mode
+       :straight t
+       :ensure t
+       :init (ido-vertical-mode 1))
+     (setq ido-vertical-define-keys 'C-n-and-C-p-only)
+   #+end_src
 * Org
 *** org-tempo
   #+begin_src emacs-lisp
@@ -75,7 +110,8 @@
     #+begin_src emacs-lisp
       (use-package org-bullets
         :straight t
-        :ensure t)
+        :ensure t
+        :config (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))
     #+end_src
 * Terminal
   #+begin_src emacs-lisp
@@ -120,14 +156,27 @@
      (use-package magit
        :straight t)
    #+end_src
+** smex
+   #+begin_src emacs-lisp
+     (use-package smex
+       :straight t
+       :init (smex-initialize)
+       :bind ("M-x" . smex))
+   #+end_src
+** avy
+   #+begin_src emacs-lisp
+     (use-package avy
+       :straight t
+       :bind ("M-s" . avy-goto-char))
+   #+end_src
 * Python
 ** elpy
    #+begin_src emacs-lisp
      (use-package elpy
        :straight t
        :ensure t
-       :init
-       (elpy-enable))
+       :init (elpy-enable)
+       :config (add-hook 'python-mode-hook (lambda () (hs-minor-mode))))
    #+end_src
 ** blacken
    #+begin_src emacs-lisp
