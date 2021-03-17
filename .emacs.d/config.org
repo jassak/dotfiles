@@ -1,7 +1,4 @@
-* Emacs Installation
-** Macos
-  =brew install emacs-plus@28 --with-modern-papirus-icon --with-xwidgets --with-mailutils=
-  =ln -s /usr/local/opt/emacs-plus@28/Emacs.app /Applications=
+* Emacs Installation ** Macos =brew install emacs-plus@28 --with-modern-papirus-icon --with-xwidgets --with-mailutils= =ln -s /usr/local/opt/emacs-plus@28/Emacs.app /Applications=
 * Settings 
 ** spacemacs-theme
    #+begin_src emacs-lisp
@@ -75,15 +72,47 @@
         (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
       (global-set-key (kbd "C-c r") 'config-reload)
     #+end_src
-* Keybindings
-*** other-window
-    #+begin_src emacs-lisp
-      (global-set-key (kbd "M-o") 'other-window)
-    #+end_src
-*** buffer switching
+** sane window splits
    #+begin_src emacs-lisp
-     (global-set-key (kbd "C-x b") 'ido-switch-buffer)
-     (global-set-key (kbd "C-x C-b") 'ibuffer)
+     (defun split-window-and-follow-horizontally ()
+       (interactive)
+       (split-window-below)
+       (balance-windows)
+       (other-window 1))
+     (global-set-key (kbd "C-x 2") 'split-window-and-follow-horizontally)
+     (defun split-window-and-follow-vertically ()
+       (interactive)
+       (split-window-right)
+       (balance-windows)
+       (other-window 1))
+     (global-set-key (kbd "C-x 3") 'split-window-and-follow-vertically)
+   #+end_src
+** intelligent subwords
+   #+begin_src emacs-lisp
+     (global-subword-mode 1)
+   #+end_src
+** electric
+   #+begin_src emacs-lisp
+     (setq electric-pair-pairs '(
+                                 (?\( . ?\))
+                                 (?\[ . ?\])
+                                 (?\{ . ?\})
+                                 ))
+     (electric-pair-mode t)
+     (add-function :before-until electric-pair-inhibit-predicate ;; disable for <>
+       (lambda (c) (eq c ?<)))
+   #+end_src
+** line and column number on modline
+   #+begin_src emacs-lisp
+     (line-number-mode 1)
+     (column-number-mode 1)
+   #+end_src
+** kill current buffer without asking
+   #+begin_src emacs-lisp
+     (defun kill-current-buffer ()
+       (interactive)
+       (kill-buffer (current-buffer)))
+     (global-set-key (kbd "C-x k") 'kill-current-buffer)
    #+end_src
 * IDO
 ** enable IDO mode
@@ -132,7 +161,7 @@
      (use-package evil
        :straight t
        :init (setq evil-split-window-below t
-		   evil-split-window-right t
+		   evil-vsplit-window-right t
 		   evil-disable-insert-state-bindings t
 		   evil-want-C-u-delete t
 		   evil-want-C-u-scroll t
@@ -169,6 +198,42 @@
        :straight t
        :bind ("M-s" . avy-goto-char))
    #+end_src
+** evil-goggles
+   #+begin_src emacs-lisp
+     (use-package evil-goggles
+       :straight t
+       :init
+       (setq evil-goggles-enable-change nil)
+       :config
+       (evil-goggles-mode)
+       (evil-goggles-use-diff-faces))
+   #+end_src
+** rainbow-delimiters
+   #+begin_src emacs-lisp
+     (use-package rainbow-delimiters
+       :straight t
+       :init
+       (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+   #+end_src
+** all-the-icons
+   #+begin_src emacs-lisp
+     (use-package all-the-icons
+       :straight t)
+   #+end_src
+** dashboard
+   #+begin_src emacs-lisp
+     (use-package dashboard
+       :straight t
+       :init
+       (add-hook 'after-init-hook 'dashboard-refresh-buffer)
+       :config
+       (setq dashboard-items '((recents . 10)
+                               (projects . 3)
+                               (agenda . 5)))
+       (setq dashboard-set-heading-icons t)
+       (setq dashboard-set-file-icons t)
+       (dashboard-setup-startup-hook))
+   #+end_src
 * Python
 ** elpy
    #+begin_src emacs-lisp
@@ -188,3 +253,20 @@
      (setq python-shell-interpreter "ipython"
            python-shell-interpreter-args "-i --simple-prompt")
    #+end_src
+* Keybindings
+*** other-window
+    #+begin_src emacs-lisp
+      (global-set-key (kbd "M-o") 'other-window)
+    #+end_src
+*** buffer switching
+   #+begin_src emacs-lisp
+     (global-set-key (kbd "C-x b") 'ido-switch-buffer)
+     (global-set-key (kbd "C-x C-b") 'ibuffer)
+   #+end_src
+*** vim-like window navigation
+    #+begin_src emacs-lisp
+      (define-key evil-normal-state-map (kbd "M-h") #'evil-window-left)
+      (define-key evil-normal-state-map (kbd "M-j") #'evil-window-down)
+      (define-key evil-normal-state-map (kbd "M-k") #'evil-window-up)
+      (define-key evil-normal-state-map (kbd "M-l") #'evil-window-right)
+    #+end_src
