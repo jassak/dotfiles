@@ -1,0 +1,141 @@
+* Emacs Installation
+  =brew install emacs-plus@28 --with-modern-papirus-icon --with-xwidgets --with-mailutils=
+* Customizations 
+** spacemacs-theme
+   #+begin_src emacs-lisp
+     (use-package spacemacs-theme
+       :defer t
+       :init (load-theme 'spacemacs-dark t))
+   #+end_src
+** No tool/scroll bar
+   #+begin_src emacs-lisp
+     (tool-bar-mode -1)
+     (scroll-bar-mode -1)
+   #+end_src
+** menu-bar
+   #+begin_src emacs-lisp
+     (menu-bar-mode t)
+   #+end_src
+** No splash screen
+   #+begin_src emacs-lisp
+     (setq inhibit-startup-message t
+     inhibit-startup-echo-area-message t)
+   #+end_src
+** No beep
+   #+begin_src emacs-lisp
+     (setq ring-bell-function 'ignore)
+   #+end_src
+** No backups/autosave
+   #+begin_src emacs-lisp
+     (setq make-backup-file nil)
+     (setq auto-save-default nil)
+   #+end_src
+** Global line numbers
+   #+begin_src emacs-lisp
+     (global-linum-mode 1)
+   #+end_src
+** Highlight active line
+   #+begin_src emacs-lisp
+     (when window-system (global-hl-line-mode t))
+   #+end_src
+** Do not wrap lines
+   #+begin_src emacs-lisp
+     (set-default 'truncate-lines t)
+   #+end_src
+** Smooth scrolling
+   #+begin_src emacs-lisp
+     (setq scroll-conservatively 100)
+   #+end_src
+** y/n instead of yes/no
+   #+begin_src emacs-lisp
+     (defalias 'yes-or-no-p 'y-or-n-p)
+   #+end_src
+** Global prettify symbols
+   #+begin_src emacs-lisp
+     (global-prettify-symbols-mode t)
+   #+end_src
+* Keybindings
+*** other-window
+    #+begin_src emacs-lisp
+      (windmove-default-keybindings)
+      (global-set-key (kbd "M-o") 'other-window)
+    #+end_src
+* IDO
+  #+begin_src emacs-lisp
+    (ido-mode 1)
+    (setq ido-enabel-flex-matching t)
+    (setq ido-everywhere t)
+  #+end_src
+* Org
+*** org-tempo
+  #+begin_src emacs-lisp
+    (require 'org-tempo)
+  #+end_src
+*** org-bullets
+    #+begin_src emacs-lisp
+      (use-package org-bullets
+        :straight t
+        :ensure t)
+    #+end_src
+* Terminal
+  #+begin_src emacs-lisp
+    (defvar my-term-shell "/bin/zsh")
+    (defadvice ansi-term (before force-bash)
+      (interactive (list my-term-shell)))
+    (ad-activate 'ansi-term)
+    (global-set-key (kbd "<C-return>") 'ansi-term)
+  #+end_src
+* Packages
+** better-defaults
+   #+begin_src emacs-lisp
+     (use-package better-defaults
+       :straight t)
+   #+end_src
+** evil
+   #+begin_src emacs-lisp
+     (use-package evil
+       :straight t
+       :init (setq evil-split-window-below t
+		   evil-split-window-right t
+		   evil-disable-insert-state-bindings t
+		   evil-want-C-u-delete t
+		   evil-want-C-u-scroll t
+		   evil-want-Y-yank-to-eol t)
+       :config (evil-mode t))
+   #+end_src
+** which-key
+   #+begin_src emacs-lisp
+     (use-package which-key
+       :straight t
+       :init (which-key-mode))
+   #+end_src
+** beacon
+   #+begin_src emacs-lisp
+     (use-package beacon
+       :straight t
+       :init (beacon-mode 1))
+   #+end_src
+** magit
+   #+begin_src emacs-lisp
+     (use-package magit
+       :straight t)
+   #+end_src
+* Python
+** elpy
+   #+begin_src emacs-lisp
+     (use-package elpy
+       :straight t
+       :ensure t
+       :init
+       (elpy-enable))
+   #+end_src
+** blacken
+   #+begin_src emacs-lisp
+     (use-package blacken
+       :straight t)
+   #+end_src
+** ipython as python-shell-interpreter
+   #+begin_src emacs-lisp
+     (setq python-shell-interpreter "ipython"
+           python-shell-interpreter-args "-i --simple-prompt")
+   #+end_src
