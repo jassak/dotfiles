@@ -1,4 +1,7 @@
-* Emacs Installation ** Macos =brew install emacs-plus@28 --with-modern-papirus-icon --with-xwidgets --with-mailutils= =ln -s /usr/local/opt/emacs-plus@28/Emacs.app /Applications=
+* Emacs Installation
+** Macos
+   =brew install emacs-plus@28 --with-modern-papirus-icon --with-xwidgets --with-mailutils=
+   =ln -s /usr/local/opt/emacs-plus@28/Emacs.app /Applications=
 * Settings 
 ** spacemacs-theme
    #+begin_src emacs-lisp
