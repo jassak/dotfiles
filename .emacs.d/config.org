@@ -5,19 +5,17 @@
      brew install emacs-plus@28 --with-modern-papirus-icon --with-xwidgets --with-mailutils
      ln -s /usr/local/opt/emacs-plus@28/Emacs.app /Applications
    #+end_src
-* Settings
-** spacemacs-theme
-   #+begin_src emacs-lisp
-     (use-package spacemacs-theme
-       :defer t
-       :init (load-theme 'spacemacs-dark t))
-   #+end_src
+* UI
+** Start maximized
+#+begin_src emacs-lisp
+  (add-to-list 'default-frame-alist '(fullscreen . maximized))
+#+end_src
 ** No tool/scroll bar
    #+begin_src emacs-lisp
      (tool-bar-mode -1)
      (scroll-bar-mode -1)
    #+end_src
-** menu-bar
+** Menu bar
    #+begin_src emacs-lisp
      (menu-bar-mode t)
    #+end_src
@@ -26,18 +24,10 @@
      (setq inhibit-startup-message t
      inhibit-startup-echo-area-message t)
    #+end_src
-** No beep
-   #+begin_src emacs-lisp
-     (setq ring-bell-function 'ignore)
-   #+end_src
-** No backups/autosave
-   #+begin_src emacs-lisp
-     (setq make-backup-file nil)
-     (setq auto-save-default nil)
-   #+end_src
 ** Global line numbers
+The older =(global-linum-mode 1)= doesn't work with git-gutter
    #+begin_src emacs-lisp
-     (global-linum-mode 1)
+     (global-display-line-numbers-mode t)
    #+end_src
 ** Highlight active line
    #+begin_src emacs-lisp
@@ -51,49 +41,68 @@
    #+begin_src emacs-lisp
      (setq scroll-conservatively 100)
    #+end_src
-** y/n instead of yes/no
-   #+begin_src emacs-lisp
-     (defalias 'yes-or-no-p 'y-or-n-p)
-   #+end_src
 ** Global prettify symbols
 
      (global-prettify-symbols-mode t)
+   #+end_src
+** spacemacs-theme
+   #+begin_src emacs-lisp
+     (use-package spacemacs-theme
+       :defer t
+       :init (load-theme 'spacemacs-dark t))
+   #+end_src
+** Modeline
+*** spaceline
+   #+begin_src emacs-lisp
+     (use-package spaceline
+       :straight t
+       :config (require 'spaceline-config)
+       (spaceline-spacemacs-theme))
+   #+end_src
+*** spaceline-all-the-icons
+   #+begin_src emacs-lisp
+     (use-package spaceline-all-the-icons
+       :straight t
+       :after spaceline
+       :config
+       (setq spaceline-all-the-icons-separator-type 'none)
+       (spaceline-all-the-icons-theme))
+   #+end_src
+** Cursor color
+#+begin_src emacs-lisp
+  (set-cursor-color "#ff6b66") 
+#+end_src
+** rainbow-delimiters
+   #+begin_src emacs-lisp
+     (use-package rainbow-delimiters
+       :straight t
+       :init
+       (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+   #+end_src
+** all-the-icons
+   #+begin_src emacs-lisp
+     (use-package all-the-icons
+       :straight t)
+   #+end_src
+* Better defaults 
+** No beep
+   #+begin_src emacs-lisp
+     (setq ring-bell-function 'ignore)
+   #+end_src
+** No backups/autosave
+   #+begin_src emacs-lisp
+     (setq make-backup-file nil)
+     (setq auto-save-default nil)
+   #+end_src
+** y/n instead of yes/no
+   #+begin_src emacs-lisp
+     (defalias 'yes-or-no-p 'y-or-n-p)
    #+end_src
 ** ibuffer expert mode
    #+begin_src emacs-lisp
      (setq ibuffer-expert t)
    #+end_src
-** config edit/reload
-*** edit
-   #+begin_src emacs-lisp
-     (defun config-visit ()
-       (interactive)
-       (find-file "~/.emacs.d/config.org"))
-     (global-set-key (kbd "C-c e") 'config-visit)
-   #+end_src
-*** reload
-    #+begin_src emacs-lisp
-      (defun config-reload ()
-        (interactive)
-        (load-file (expand-file-name "~/.emacs.d/init.el")))
-      (global-set-key (kbd "C-c r") 'config-reload)
-    #+end_src
-** sane window splits
-   #+begin_src emacs-lisp
-     (defun split-window-and-follow-horizontally ()
-       (interactive)
-       (split-window-below)
-       (balance-windows)
-       (other-window 1))
-     (global-set-key (kbd "C-x 2") 'split-window-and-follow-horizontally)
-     (defun split-window-and-follow-vertically ()
-       (interactive)
-       (split-window-right)
-       (balance-windows)
-       (other-window 1))
-     (global-set-key (kbd "C-x 3") 'split-window-and-follow-vertically)
-   #+end_src
-** intelligent subwords
+** Intelligent subwords
    #+begin_src emacs-lisp
      (global-subword-mode 1)
    #+end_src
@@ -108,57 +117,14 @@
      (add-function :before-until electric-pair-inhibit-predicate ;; disable for <>
        (lambda (c) (eq c ?<)))
    #+end_src
-** line and column number on modline
-   #+begin_src emacs-lisp
-     (line-number-mode 1)
-     (column-number-mode 1)
-   #+end_src
-** kill current buffer without asking
+** Kill current buffer without asking
    #+begin_src emacs-lisp
      (defun kill-current-buffer ()
        (interactive)
        (kill-buffer (current-buffer)))
      (global-set-key (kbd "C-x k") 'kill-current-buffer)
    #+end_src
-** clock
-   #+begin_src emacs-lisp
-     (setq display-time-24hr-format t)
-     (display-time-mode 1)
-   #+end_src
-** set correct PATH variable
-#+begin_src emacs-lisp
-  (defun set-exec-path-from-shell-PATH ()
-    "Sets the exec-path to the same value used by the user shell.
-     Copied from https://emacs.stackexchange.com/a/4093."
-    (let ((path-from-shell
-           (replace-regexp-in-string
-            "[[:space:]\n]*$" ""
-            (shell-command-to-string "$SHELL -l -c 'echo $PATH'"))))
-      (setenv "PATH" path-from-shell)
-      (setq exec-path (split-string path-from-shell path-separator))))
-
-  ;; call function now
-  (set-exec-path-from-shell-PATH)
-#+end_src
-* Modeline
-** spaceline
-   #+begin_src emacs-lisp
-     (use-package spaceline
-       :straight t
-       :config (require 'spaceline-config)
-       (spaceline-spacemacs-theme))
-   #+end_src
-** spaceline-all-the-icons
-   #+begin_src emacs-lisp
-     (use-package spaceline-all-the-icons
-       :straight t
-       :after spaceline
-       :config
-       (setq spaceline-all-the-icons-separator-type 'none)
-       (spaceline-all-the-icons-theme))
-   #+end_src
-* IDO
-** enable IDO mode
+** Enable IDO mode
   #+begin_src emacs-lisp
     (setq ido-enable-flex-matching t)
     (setq ido-create-new-buffer 'always)
@@ -183,6 +149,77 @@
        (setq ido-enable-flex-matching t)
        (setq ido-use-faces nil))
    #+end_src
+** better-defaults
+   #+begin_src emacs-lisp
+     (use-package better-defaults
+       :straight t)
+   #+end_src
+** which-key
+   #+begin_src emacs-lisp
+     (use-package which-key
+       :straight t
+       :init (which-key-mode))
+   #+end_src
+** smex
+   #+begin_src emacs-lisp
+     (use-package smex
+       :straight t
+       :init (smex-initialize)
+       :bind ("s-x" . smex))
+   #+end_src
+** avy
+   #+begin_src emacs-lisp
+     (use-package avy
+       :straight t
+       :bind ("s-s" . avy-goto-char))
+   #+end_src
+** popup-kill-ring
+   #+begin_src emacs-lisp
+     (use-package popup-kill-ring
+       :straight t
+       :bind ("s-y" . popup-kill-ring)
+       :config
+       (setq popup-kill-ring-interactive-insert t))
+   #+end_src
+** undo-tree
+   #+begin_src emacs-lisp
+     (use-package undo-tree
+       :after evil
+       :straight t
+       :config (global-undo-tree-mode)
+       (evil-set-undo-system 'undo-tree))
+   #+end_src
+** Sane window splits
+   #+begin_src emacs-lisp
+     (defun split-window-and-follow-horizontally ()
+       (interactive)
+       (split-window-below)
+       (balance-windows)
+       (other-window 1))
+     (global-set-key (kbd "C-x 2") 'split-window-and-follow-horizontally)
+     (defun split-window-and-follow-vertically ()
+       (interactive)
+       (split-window-right)
+       (balance-windows)
+       (other-window 1))
+     (global-set-key (kbd "C-x 3") 'split-window-and-follow-vertically)
+   #+end_src
+* Settings
+** Set correct PATH variable
+#+begin_src emacs-lisp
+  (defun set-exec-path-from-shell-PATH ()
+    "Sets the exec-path to the same value used by the user shell.
+     Copied from https://emacs.stackexchange.com/a/4093."
+    (let ((path-from-shell
+           (replace-regexp-in-string
+            "[[:space:]\n]*$" ""
+            (shell-command-to-string "$SHELL -l -c 'echo $PATH'"))))
+      (setenv "PATH" path-from-shell)
+      (setq exec-path (split-string path-from-shell path-separator))))
+
+  ;; call function now
+  (set-exec-path-from-shell-PATH)
+#+end_src
 * Org
 ** org-tempo
  #+begin_src emacs-lisp
@@ -219,37 +256,80 @@
       '(org-startup-folded 'overview)
       '(org-startup-indented t))
 
-     (setq org-agenda-files (list (concat org-directory "agenda.org")))
+     (setq org-agenda-files (list (concat org-directory "agenda.org") (concat org-directory "tasks.org")))
    #+end_src
+** org-journal
+#+begin_src emacs-lisp
+  (use-package org-journal
+    :straight t
+    :init
+    ;; Change default prefix key; needs to be set before loading org-journal
+    (setq org-journal-prefix-key "C-c j")
+    :config
+    (setq org-journal-dir "~/Dropbox/org/journal/"
+          org-journal-file-type 'monthly
+          org-journal-file-format "%Y-%m.org"
+          org-journal-file-header "#+TITLE: %B %Y"))
+
+  (defun org-journal-find-location ()
+    ;; Open today's journal, but specify a non-nil prefix argument in order to
+    ;; inhibit inserting the heading; org-capture will insert the heading.
+    (org-journal-new-entry t)
+    (unless (eq org-journal-file-type 'daily)
+      (org-narrow-to-subtree))
+    (goto-char (point-max)))
+#+end_src
 ** org capture templates
    #+begin_src emacs-lisp
      (setq org-capture-templates
-           '(("a" "Appointment" entry
-              (file+headline "~/Dropbox/org/agenda.org" "Appointments")
-              "* %?\n:PROPERTIES:\n:ADDRESS: \n:DATE: %^T\n:END:")
+           '(("a" "Agenda entry" entry
+              (file+headline "~/Dropbox/org/agenda.org" "Agenda")
+              "* %?\n:PROPERTIES:\n:ADDRESS: \n:END:\nSCHEDULED: %^T")
              ("n" "Note" entry
               (file+headline "~/Dropbox/org/notes.org" "Notes")
-              "* %?\n%T")
+              "* %?\n%U")
              ("l" "Link" entry
               (file+headline "~/Dropbox/org/links.org" "Links")
-              "* %?\n%^L \n%T" :prepend t)
+              "* %?\n%^L \n%U" :prepend t)
              ("t" "Task" entry
               (file+headline "~/Dropbox/org/tasks.org" "Tasks")
-              "* TODO %?\n:DEADLINE: %^t\n%T" :prepend t)
+              "* TODO %?\nSCHEDULED: %^t\n%U" :prepend t)
              ("d" "Diary entry" entry
               (file+olp+datetree "~/Dropbox/org/diary.org")
               "* %U\n %?\n")
              ("s" "Snippet" entry
               (file+headline "~/Dropbox/org/snippets.org" "Snippets")
-              "* %?\n%t")))
+              "* %?\n%u")
+             ("j" "Journal entry" plain (function org-journal-find-location)
+              "** %(format-time-string org-journal-time-format)%^{Title}\n%i%?\n\n" :jump-to-captured t)))
    #+end_src
-* Packages
-** better-defaults
+** ox-twbs
+#+begin_src emacs-lisp
+  (use-package ox-twbs
+    :straight t
+    :config
+    (setq org-publish-project-alist
+        '(("org-notes"
+           :base-directory "~/Dropbox/org"
+           :publishing-directory "~/public_html/"
+           :publishing-function org-twbs-publish-to-html
+           :with-sub-superscript nil
+           ))))
+#+end_src
+** org-reveal
    #+begin_src emacs-lisp
-     (use-package better-defaults
+     (use-package ox-reveal
+       :straight t)
+     (setq org-reveal-root "file:///Users/zazon/projects/reveal.js")
+     (setq org-reveal-mathjax t)
+   #+end_src
+** htmlize
+   #+begin_src emacs-lisp
+     (use-package htmlize
        :straight t)
    #+end_src
-** evil
+* evil
+Vim keybindings for emacs
    #+begin_src emacs-lisp
      (use-package evil
        :straight t
@@ -258,40 +338,32 @@
                    evil-disable-insert-state-bindings t
                    evil-want-C-u-delete t
                    evil-want-C-u-scroll t
+                   evil-want-integration t  ;; required by evil-collection
+                   evil-want-keybinding nil ;; required by evil-collection
                    evil-want-Y-yank-to-eol t)
        :config (evil-mode t))
    #+end_src
-** which-key
-   #+begin_src emacs-lisp
-     (use-package which-key
-       :straight t
-       :init (which-key-mode))
-   #+end_src
-** COMMENT beacon
-   #+begin_src emacs-lisp
-     (use-package beacon
-       :straight t
-       :init (beacon-mode 1))
-   #+end_src
-** magit
-   #+begin_src emacs-lisp
-     (use-package magit
-       :straight t)
-   #+end_src
-** smex
-   #+begin_src emacs-lisp
-     (use-package smex
-       :straight t
-       :init (smex-initialize)
-       :bind ("s-x" . smex))
-   #+end_src
-** avy
-   #+begin_src emacs-lisp
-     (use-package avy
-       :straight t
-       :bind ("s-s" . avy-goto-char))
-   #+end_src
+** evil-collection
+Use =evil= keybindings in various other modes
+#+begin_src emacs-lisp
+  (use-package evil-collection
+    :after evil
+    :straight t
+    :config
+    (setq evil-collection-mode-list
+          '(dired magit mu4e which-key))
+    (evil-collection-init))
+#+end_src
+** evil-surround
+Enable =vim-surround= style bindings globally
+#+begin_src emacs-lisp
+  (use-package evil-surround
+    :straight t
+    :config
+    (global-evil-surround-mode 1))
+#+end_src
 ** evil-goggles
+Highlights currently yanked/deleted region
    #+begin_src emacs-lisp
      (use-package evil-goggles
        :straight t
@@ -301,66 +373,139 @@
        (evil-goggles-mode)
        (evil-goggles-use-diff-faces))
    #+end_src
-** rainbow-delimiters
+** evil-org
+Use =evil= with Org agendas
+#+begin_src emacs-lisp
+  (use-package evil-org
+    :straight t
+    :after org
+    :config
+    (add-hook 'org-mode-hook 'evil-org-mode)
+    (add-hook 'evil-org-mode-hook
+              (lambda () (evil-org-set-key-theme)))
+    (require 'evil-org-agenda)
+    (evil-org-agenda-set-keys))
+#+end_src
+* mu4e
+#+begin_src emacs-lisp
+  (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")
+  (require 'mu4e)
+
+  (setq
+   mue4e-headers-skip-duplicates  t
+   mu4e-view-show-images t
+   mu4e-view-show-addresses t
+   mu4e-compose-format-flowed nil
+   mu4e-date-format "%y/%m/%d"
+   mu4e-headers-date-format "%Y/%m/%d"
+   mu4e-change-filenames-when-moving t
+   mu4e-attachments-dir "~/Downloads"
+
+   mu4e-maildir       "~/Mail"   ;; top-level Maildir
+   ;; note that these folders below must start with /
+   ;; the paths are relative to maildir root
+   mu4e-refile-folder "/fastmail/Archive"
+   mu4e-sent-folder   "/fastmail/Sent"
+   mu4e-drafts-folder "/fastmail/Drafts"
+   mu4e-trash-folder  "/fastmail/Trash"
+   )
+
+  ;; this setting allows to re-sync and re-index mail
+  ;; by pressing U
+  (setq mu4e-get-mail-command  "mbsync -a")
+
+  ;; shortcuts
+  ;; (setq mu4e-maildir-shortcuts
+  ;;       '(("/fastmail/Inbox" . ?1)
+  ;;         ("/gmail/Inbox" . ?2)
+  ;;         ("/athenarc/Inbox" . ?3)
+  ;;         ("/uoa/Inbox" . ?4)))
+#+end_src
+Multiple accounts setup, [[https://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html][see here]]
+#+begin_src emacs-lisp
+  (setq mu4e-sent-folder "/fastmail/Sent"
+        mu4e-drafts-folder "/fastmail/Drafts"
+        mu4e-refile-folder "/fastmail/Archive"
+        mu4e-trash-folder  "/fastmail/Trash"
+        user-mail-address "jassak@fastmail.com"
+        smtpmail-default-smtp-server "smtp.fastmail.com"
+        smtpmail-smtp-server "smtp.fastmail.com"
+        smtpmail-stream-type 'starttls
+        smtpmail-smtp-service 465)
+
+  (defvar my-mu4e-account-alist
+    '(("fastmail"
+       (mu4e-sent-folder "/fastmail/Sent")
+       (mu4e-drafts-folder "/fastmail/Drafts")
+       (mu4e-refile-folder "/fastmail/Archive")
+       (mu4e-trash-folder "/fastmail/Trash")
+       (user-mail-address "jassak@fastmail.com")
+       (smtpmail-default-smtp-server "smtp.fastmail.com")
+       (smtpmail-smtp-user "jassak")
+       (smtpmail-smtp-server "smtp.fastmail.com")
+       (smtpmail-stream-type starttls)
+       (smtpmail-smtp-service 465))
+      ("athenarc"
+       (mu4e-sent-folder "/athenarc/Sent Items")
+       (mu4e-drafts-folder "/athenarc/Drafts")
+       (mu4e-refile-folder "/athenarc/Archive")
+       (mu4e-trash-folder "/athenarc/Deleted Items")
+       (user-mail-address "jsakellariou@athenarc.gr")
+       (smtpmail-default-smtp-server "smtp.office365.com")
+       (smtpmail-smtp-user "jsakellariou")
+       (smtpmail-smtp-server "smtp.office365.com")
+       (smtpmail-stream-type starttls)
+       (smtpmail-smtp-service 587))))
+
+  (defun my-mu4e-set-account ()
+    "Set the account for composing a message."
+    (let* ((account
+            (if mu4e-compose-parent-message
+                (let ((maildir (mu4e-message-field mu4e-compose-parent-message :maildir)))
+                  (string-match "/\\(.*?\\)/" maildir)
+                  (match-string 1 maildir))
+              (completing-read (format "Compose with account: (%s) "
+                                       (mapconcat #'(lambda (var) (car var))
+                                                  my-mu4e-account-alist "/"))
+                               (mapcar #'(lambda (var) (car var)) my-mu4e-account-alist)
+                               nil t nil nil (caar my-mu4e-account-alist))))
+           (account-vars (cdr (assoc account my-mu4e-account-alist))))
+      (if account-vars
+          (mapc #'(lambda (var)
+                    (set (car var) (cadr var)))
+                account-vars)
+        (error "No email account found"))))
+
+  (add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
+#+end_src
+** Sending mail over SMTP
+
+I send my email through =msmtp=. These settings describe how to send a message:
+
+- Use a sendmail program instead of sending directly from Emacs,
+- Tell =msmtp= to infer the correct account from the =From:= address,
+- Don't add a "=-f username=" flag to the =msmtp= command, and
+- Use =/usr/bin/msmtp=!
+
+#+begin_src emacs-lisp
+  (setq message-send-mail-function 'message-send-mail-with-sendmail)
+  (setq message-sendmail-extra-arguments '("--read-envelope-from"))
+  (setq message-sendmail-f-is-evil 't)
+  (setq sendmail-program "msmtp")
+#+end_src
+* Project managment
+** magit
    #+begin_src emacs-lisp
-     (use-package rainbow-delimiters
-       :straight t
-       :init
-       (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
-   #+end_src
-** all-the-icons
-   #+begin_src emacs-lisp
-     (use-package all-the-icons
+     (use-package magit
        :straight t)
    #+end_src
-** dashboard
-   #+begin_src emacs-lisp
-     (use-package dashboard
-       :straight t
-       :ensure t
-       :init
-       (add-hook 'after-init-hook 'dashboard-refresh-buffer)
-       :config
-       (setq show-week-agenda-p t)
-       (setq dashboard-items '((recents . 5)
-                               (agenda . 5)
-                               (projects . 5)
-                               (bookmarks . 5)))
-       (setq dashboard-set-heading-icons t)
-       (setq dashboard-set-file-icons t)
-       (setq dashboard-startup-banner 'logo)
-       (setq dashboard-center-content t)
-       (setq dashboard-set-navigator t)
-       (setq dashboard-set-footer nil)
-       (setq dashboard-org-agenda-categories '("Tasks" "Appointments"))
-       (dashboard-setup-startup-hook))
-   #+end_src
-** popup-kill-ring
-   #+begin_src emacs-lisp
-     (use-package popup-kill-ring
-       :straight t
-       :bind ("s-y" . popup-kill-ring)
-       :config
-       (setq popup-kill-ring-interactive-insert t))
-   #+end_src
-** COMMENT mixed-pitch
-   #+begin_src emacs-lisp
-     (use-package mixed-pitch
-       :straight t
-       :config
-       (add-hook 'text-mode-hook #'mixed-pitch-mode))
-   #+end_src
-** yasnippet
-   #+begin_src emacs-lisp
-     (use-package yasnippet
-       :straight t
-       :config
-       (use-package yasnippet-snippets
-         :straight t)
-       (yas-reload-all)
-       (add-hook 'emacs-lisp-mode 'yas-minor-mode)
-       (add-hook 'python-mode-hook 'yas-minor-mode))
-   #+end_src
+** git-gutter
+#+begin_src emacs-lisp
+  (use-package git-gutter
+    :straight t
+    :config
+    (global-git-gutter-mode t))
+#+end_src
 ** projectile
    #+begin_src emacs-lisp
      (use-package projectile
@@ -385,27 +530,139 @@
           (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
           (push (org-projectile-project-todo-entry) org-capture-templates)))
     #+end_src
-** undo-tree
+** dashboard
    #+begin_src emacs-lisp
-     (use-package undo-tree
+     (use-package dashboard
        :straight t
-       :config (global-undo-tree-mode)
-       (evil-set-undo-system 'undo-tree))
+       :ensure t
+       :init
+       (add-hook 'after-init-hook 'dashboard-refresh-buffer)
+       :config
+       (setq show-week-agenda-p t)
+       (setq dashboard-items '((recents . 5)
+                               (agenda . 5)
+                               (projects . 5)
+                               (bookmarks . 5)))
+       (setq dashboard-set-heading-icons t)
+       (setq dashboard-set-file-icons t)
+       (setq dashboard-startup-banner 'logo)
+       (setq dashboard-center-content t)
+       (setq dashboard-set-navigator t)
+       (setq dashboard-set-footer nil)
+       (setq dashboard-org-agenda-categories '("Tasks" "Appointments"))
+       (dashboard-setup-startup-hook))
    #+end_src
-** org-reveal
+** treemacs
+#+begin_src emacs-lisp
+  (use-package treemacs
+    :straight t
+    :defer t
+    :init
+    (with-eval-after-load 'winum
+      (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+    :config
+    (progn
+      (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
+            treemacs-deferred-git-apply-delay      0.5
+            treemacs-directory-name-transformer    #'identity
+            treemacs-display-in-side-window        t
+            treemacs-eldoc-display                 t
+            treemacs-file-event-delay              5000
+            treemacs-file-extension-regex          treemacs-last-period-regex-value
+            treemacs-file-follow-delay             0.2
+            treemacs-file-name-transformer         #'identity
+            treemacs-follow-after-init             t
+            treemacs-git-command-pipe              ""
+            treemacs-goto-tag-strategy             'refetch-index
+            treemacs-indentation                   2
+            treemacs-indentation-string            " "
+            treemacs-is-never-other-window         nil
+            treemacs-max-git-entries               5000
+            treemacs-missing-project-action        'ask
+            treemacs-move-forward-on-expand        nil
+            treemacs-no-png-images                 nil
+            treemacs-no-delete-other-windows       t
+            treemacs-project-follow-cleanup        nil
+            treemacs-persist-file                  (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+            treemacs-position                      'left
+            treemacs-read-string-input             'from-child-frame
+            treemacs-recenter-distance             0.1
+            treemacs-recenter-after-file-follow    nil
+            treemacs-recenter-after-tag-follow     nil
+            treemacs-recenter-after-project-jump   'always
+            treemacs-recenter-after-project-expand 'on-distance
+            treemacs-show-cursor                   nil
+            treemacs-show-hidden-files             t
+            treemacs-silent-filewatch              nil
+            treemacs-silent-refresh                nil
+            treemacs-sorting                       'alphabetic-asc
+            treemacs-space-between-root-nodes      t
+            treemacs-tag-follow-cleanup            t
+            treemacs-tag-follow-delay              1.5
+            treemacs-user-mode-line-format         nil
+            treemacs-user-header-line-format       nil
+            treemacs-width                         35
+            treemacs-workspace-switch-cleanup      nil)
+
+      ;; The default width and height of the icons is 22 pixels. If you are
+      ;; using a Hi-DPI display, uncomment this to double the icon size.
+      (treemacs-resize-icons 20)
+
+      (treemacs-follow-mode t)
+      (treemacs-filewatch-mode t)
+      (treemacs-fringe-indicator-mode 'always)
+      (pcase (cons (not (null (executable-find "git")))
+                   (not (null treemacs-python-executable)))
+        (`(t . t)
+         (treemacs-git-mode 'deferred))
+        (`(t . _)
+         (treemacs-git-mode 'simple))))
+    :bind
+    (:map global-map
+          ("M-0"       . treemacs-select-window)
+          ("C-x t 1"   . treemacs-delete-other-windows)
+          ("C-x t t"   . treemacs)
+          ("C-x t B"   . treemacs-bookmark)
+          ("C-x t C-t" . treemacs-find-file)
+          ("C-x t M-t" . treemacs-find-tag)))
+
+  (use-package treemacs-evil
+    :after (treemacs evil)
+    :straight t)
+
+  (use-package treemacs-projectile
+    :after (treemacs projectile)
+    :straight t)
+
+  (use-package treemacs-icons-dired
+    :after (treemacs dired)
+    :straight t
+    :config (treemacs-icons-dired-mode))
+
+  (use-package treemacs-magit
+    :after (treemacs magit)
+    :straight t)
+
+  ;; (use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
+  ;;   :after (treemacs persp-mode) ;;or perspective vs. persp-mode
+  ;;   :straight t
+  ;;   :config (treemacs-set-scope-type 'Perspectives))
+#+end_src
+* Programming
+** Snippets
+*** yasnippet
    #+begin_src emacs-lisp
-     (use-package ox-reveal
-       :straight t)
-     (setq org-reveal-root "file:///Users/zazon/projects/reveal.js")
-     (setq org-reveal-mathjax t)
+     (use-package yasnippet
+       :straight t
+       :config
+       (use-package yasnippet-snippets
+         :straight t)
+       (yas-reload-all)
+       (add-hook 'emacs-lisp-mode 'yas-minor-mode)
+       (add-hook 'python-mode-hook 'yas-minor-mode))
    #+end_src
-** htmlize
-   #+begin_src emacs-lisp
-     (use-package htmlize
-       :straight t)
-   #+end_src
-* Autocompletion
-** company-mode
+** Autocompletion
+*** company-mode
    #+begin_src emacs-lisp
      (use-package company
        :straight t
@@ -420,14 +677,37 @@
        (define-key company-active-map (kbd "C-n") #'company-select-next)
        (define-key company-active-map (kbd "C-p") #'company-select-previous))
    #+end_src
-** company-quickhelp
+*** company-quickhelp
    #+begin_src emacs-lisp
      (use-package company-quickhelp
        :straight t
        :init (company-quickhelp-mode))
    #+end_src
-* Python
-** elpy
+** Markdown
+#+begin_src emacs-lisp
+  (use-package markdown-mode
+    :straight t
+    :commands (markdown-mode gfm-mode)
+    :mode (("README\\.md\\'" . gfm-mode)
+           ("\\.md\\'" . markdown-mode)
+           ("\\.markdown\\'" . markdown-mode))
+    :init (setq markdown-command "multimarkdown"))
+#+end_src
+** Docker
+#+begin_src emacs-lisp
+  (use-package docker
+    :straight t
+    :bind ("C-c d" . docker))
+#+end_src
+*** dockerfile-mode
+#+begin_src emacs-lisp
+  (use-package dockerfile-mode
+    :straight t
+    :init
+    (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode)))
+#+end_src
+** Python
+*** elpy
    #+begin_src emacs-lisp
      (use-package elpy
        :straight t
@@ -437,12 +717,12 @@
        (add-hook 'python-mode-hook (lambda () (hs-minor-mode)))
        (add-hook 'elpy-mode-hook (lambda () (highlight-indentation-mode -1))))
    #+end_src
-** python as python-shell-interpreter
+*** python as python-shell-interpreter
    #+begin_src emacs-lisp
      (setq python-shell-interpreter "python"
            python-shell-interpreter-args "-i")
    #+end_src
-** COMMENT company-jedi
+*** COMMENT company-jedi
    #+begin_src emacs-lisp
      (use-package company-jedi
        :straight t)
@@ -450,6 +730,11 @@
        (add-to-list 'company-backends 'company-jedi))
      (add-hook 'python-mode-hook 'my/python-mode-hook)
    #+end_src
+** Haskell
+#+begin_src emacs-lisp
+  (use-package haskell-mode
+    :straight t)
+#+end_src
 * Keybindings
 *** other-window
     #+begin_src emacs-lisp
@@ -467,7 +752,25 @@
       (define-key evil-normal-state-map (kbd "s-k") #'evil-window-up)
       (define-key evil-normal-state-map (kbd "s-l") #'evil-window-right)
     #+end_src
-
+*** open mu4e
+#+begin_src emacs-lisp
+  (global-set-key (kbd "s-m") 'mu4e)
+#+end_src
+** config edit/reload
+*** edit
+   #+begin_src emacs-lisp
+     (defun config-visit ()
+       (interactive)
+       (find-file "~/.emacs.d/config.org"))
+     (global-set-key (kbd "C-c e") 'config-visit)
+   #+end_src
+*** reload
+    #+begin_src emacs-lisp
+      (defun config-reload ()
+        (interactive)
+        (load-file (expand-file-name "~/.emacs.d/init.el")))
+      (global-set-key (kbd "C-c r") 'config-reload)
+    #+end_src
 * Terminal
 We use =vterm= which seems faster than =ansi-term=. Installation:
 #+begin_src bash
@@ -480,20 +783,14 @@ We use =vterm= which seems faster than =ansi-term=. Installation:
   make
 #+end_src
 #+begin_src emacs-lisp
-  (global-set-key (kbd "<s-return>") 'vterm)
-  ;; (define-global-minor-mode my-evil-mode evil-mode
-  ;;  (lambda ()
-  ;;    (when (not (memq major-mode
-  ;;                     (list 'vterm-mode 'shell-mode)))
-  ;;      (evil-mode 1))))
-  ;; (my-evil-mode 1)
+  (use-package vterm
+    :straight t
+    :load-path  "~/.emacs.d/straight/build/vterm/vterm-module.so")
 #+end_src
-*** TODO Find way to disable evil-mode for vterm buffers
-** vterm
-   #+begin_src emacs-lisp
-     (use-package vterm
-       :straight t
-       :load-path  "/Users/zazon/.emacs.d/straight/build/vterm/vterm-module.so")
-   #+end_src
-   
-   
+#+begin_src emacs-lisp
+  (global-set-key (kbd "<s-return>") 'vterm)
+#+end_src
+Don't use evil bindings in terminal
+#+begin_src emacs-lisp
+  (evil-set-initial-state 'vterm-mode 'emacs)
+#+end_src
