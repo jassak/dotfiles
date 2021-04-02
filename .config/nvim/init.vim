@@ -91,6 +91,8 @@ xnoremap >  >gv
 xnoremap <F5> y:Dash <C-r>"<CR>
 nnoremap <F5> :Dash<CR>
 nnoremap \\ :nohlsearch<CR>
+nnoremap tt :tabnext<cr>
+nnoremap TT :tabprevious<cr>
 
 nnoremap ∂ yyp
 xnoremap ∂ yg`]p
@@ -121,6 +123,7 @@ let mapleader=" "       " leader is space
 nnoremap <leader>/ :History/<CR>
 nnoremap <leader>; :History:<CR>
 nnoremap <leader><Leader> za
+nnoremap <Leader>b :Buffers<CR>
 nnoremap <leader>c :cw<CR>
 nnoremap <leader>e :GFiles<CR>
 nnoremap <leader>f :Files<CR>
@@ -196,6 +199,8 @@ endfunc
 tnoremap ø import sys; sys.stdout = sys.__stdout__
 iabbrev pdb __import__('pdb').set_trace()
 iabbrev improt import
+iabbrev imoprt import
+iabbrev arrau array
 " }}}1
 
 " {{{1 Plugins Install
@@ -208,6 +213,8 @@ Plug 'airblade/vim-gitgutter'
 Plug 'airblade/vim-rooter'
 Plug 'aklt/plantuml-syntax'
 Plug 'chriskempson/base16-vim'
+Plug 'ryanoasis/vim-devicons'
+Plug 'kyazdani42/nvim-web-devicons'
 Plug 'itchyny/lightline.vim'
 Plug 'jassak/vim-snippets'
 Plug 'jez/vim-better-sml'
@@ -231,9 +238,11 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
+Plug 'prendradjaja/vim-vertigo'
 Plug 'vim-ruby/vim-ruby'
 Plug 'vimwiki/vimwiki'
 Plug 'wlangstroth/vim-racket'
+Plug 'jpalardy/vim-slime'
 call plug#end()
 
 " }}}1
@@ -483,7 +492,7 @@ command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 
 let g:explorer_width = max([25, winwidth(0) * 2 / 9])
 execute 'nmap <silent> <F10> :CocCommand explorer --width ' . g:explorer_width . ' --position left --sources buffer-,file+<CR>'
-nnoremap <Leader>b :CocCommand explorer --preset floatingBuffers --sources buffer+<CR>
+" nnoremap <Leader>b :CocCommand explorer --preset floatingBuffers --sources buffer+<CR>
 let g:coc_explorer_global_presets = {
 \   '.vim': {
 \     'root-uri': '~/.config/nvim',
@@ -523,6 +532,19 @@ xmap <leader>s  <Plug>(coc-convert-snippet)
 " {{{2 vimwiki
 let g:vimwiki_map_prefix = ',w'
 let g:vimwiki_list = [{'path': '~/vimwiki/', 'path_html': '~/vimwiki_html/'}]
+" }}}
+
+" {{{2 vim-vertigo
+nnoremap <silent> <Space>j :<C-U>VertigoDown n<CR>
+vnoremap <silent> <Space>j :<C-U>VertigoDown v<CR>
+onoremap <silent> <Space>j :<C-U>VertigoDown o<CR>
+nnoremap <silent> <Space>k :<C-U>VertigoUp n<CR>
+vnoremap <silent> <Space>k :<C-U>VertigoUp v<CR>
+onoremap <silent> <Space>k :<C-U>VertigoUp o<CR>
+" }}}
+
+" {{{2 vim-slime
+let g:slime_target = "neovim"
 " }}}
 
 " }}}
@@ -693,10 +715,17 @@ augroup filetype_uml
     autocmd BufNewFile,BufRead *.uml,*.pu,*.plantuml,*puml nnoremap <buffer> <LocalLeader>m :w<CR>:silent make<CR>:!open %:r.png<CR>
 augroup END
 " }}}
+
+" {{{2 Vimwiki
+augroup filetype_wiki
+    autocmd!
+    autocmd FileType *.wiki nnoremap <buffer> <LocalLeader>c :<Plug>VimwikiToggleListItem<CR>
+augroup END
+" }}}
 " }}}
 
 " {{{1 Highlight
-highlight Comment cterm=italic
+" highlight Comment cterm=italic
 hi semshiParameter ctermfg=75  guifg=#5fafff cterm=italic gui=italic
 hi semshiFree      ctermfg=218 guifg=#ffafd7 cterm=italic gui=italic
 hi semshiParameterUnused ctermfg=117 guifg=#87d7ff cterm=underline,italic gui=underline
