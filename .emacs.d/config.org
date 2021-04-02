@@ -5,7 +5,114 @@
      brew install emacs-plus@28 --with-modern-papirus-icon --with-xwidgets --with-mailutils
      ln -s /usr/local/opt/emacs-plus@28/Emacs.app /Applications
    #+end_src
+* Setup package manager
+We need this for the rest to work. I use [[https://github.com/raxod502/straight.el][straight]]
+#+begin_src emacs-lisp
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+        (bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+  (setq package-enable-at-startup nil)
+  (straight-use-package 'use-package)
+#+end_src
 * UI
+** Theme
+=doom-themes=
+#+begin_src emacs-lisp
+  (use-package doom-themes
+    :straight t
+    :config
+    ;; Global settings (defaults)
+    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+          doom-themes-enable-italic t) ; if nil, italics is universally disabled
+    (load-theme 'doom-one t)
+
+    ;; Enable flashing mode-line on errors
+    (doom-themes-visual-bell-config)
+
+    (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+    (doom-themes-treemacs-config)
+
+    ;; Show more of the branch name
+    (setq doom-modeline-vcs-max-length 40)
+
+    ;; Corrects (and improves) org-mode's native fontification.
+    (doom-themes-org-config))
+#+end_src
+** Modeline
+=doom-modeline=
+#+begin_src emacs-lisp
+  (use-package doom-modeline
+    :straight t
+    :init (doom-modeline-mode 1))
+#+end_src
+** Default fonts
+Set default font sizes and define increase/decrease functions. Stollen from [[https://github.com/hrs/dotfiles/blob/main/emacs/dot-emacs.d/configuration.org#set-default-font-and-configure-font-resizing][here]]
+#+begin_src emacs-lisp
+  (setq hrs/default-fixed-font-size 205)
+  (setq hrs/default-variable-font-size 190)
+
+  (set-face-attribute 'default nil
+                      :height hrs/default-fixed-font-size)
+  (set-face-attribute 'variable-pitch nil
+                      :height hrs/default-variable-font-size)
+
+  (setq hrs/font-change-increment 1.05)
+
+  (defun hrs/set-font-size ()
+    "Change default, fixed-pitch, and variable-pitch font sizes to match respective variables."
+    (set-face-attribute 'default nil
+                        :height hrs/current-fixed-font-size)
+    (set-face-attribute 'fixed-pitch nil
+                        :height hrs/current-fixed-font-size)
+    (set-face-attribute 'variable-pitch nil
+                        :height hrs/current-variable-font-size))
+
+  (defun hrs/reset-font-size ()
+    "Revert font sizes back to defaults."
+    (interactive)
+    (setq hrs/current-fixed-font-size hrs/default-fixed-font-size)
+    (setq hrs/current-variable-font-size hrs/default-variable-font-size)
+    (hrs/set-font-size))
+
+  (defun hrs/increase-font-size ()
+    "Increase current font sizes by a factor of `hrs/font-change-increment'."
+    (interactive)
+    (setq hrs/current-fixed-font-size
+          (ceiling (* hrs/current-fixed-font-size hrs/font-change-increment)))
+    (setq hrs/current-variable-font-size
+          (ceiling (* hrs/current-variable-font-size hrs/font-change-increment)))
+    (hrs/set-font-size))
+
+  (defun hrs/decrease-font-size ()
+    "Decrease current font sizes by a factor of `hrs/font-change-increment', down to a minimum size of 1."
+    (interactive)
+    (setq hrs/current-fixed-font-size
+          (max 1
+               (floor (/ hrs/current-fixed-font-size hrs/font-change-increment))))
+    (setq hrs/current-variable-font-size
+          (max 1
+               (floor (/ hrs/current-variable-font-size hrs/font-change-increment))))
+    (hrs/set-font-size))
+
+  (define-key global-map (kbd "C-0") 'hrs/reset-font-size)
+  (define-key global-map (kbd "C-=") 'hrs/increase-font-size)
+  (define-key global-map (kbd "C--") 'hrs/decrease-font-size)
+
+  (hrs/reset-font-size)
+#+end_src
+** Cursor color
+#+begin_src emacs-lisp
+  (set-cursor-color "#ff6b66") 
+#+end_src
 ** Start maximized
 #+begin_src emacs-lisp
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
@@ -24,6 +131,12 @@
      (setq inhibit-startup-message t
      inhibit-startup-echo-area-message t)
    #+end_src
+** Frame title
+The default frame title isn’t useful. This binds it to the name of the
+current project:
+#+begin_src emacs-lisp
+  (setq frame-title-format '((:eval (projectile-project-name))))
+#+end_src
 ** Global line numbers
 The older =(global-linum-mode 1)= doesn't work with git-gutter
    #+begin_src emacs-lisp
@@ -42,35 +155,8 @@ The older =(global-linum-mode 1)= doesn't work with git-gutter
      (setq scroll-conservatively 100)
    #+end_src
 ** Global prettify symbols
-
-     (global-prettify-symbols-mode t)
-   #+end_src
-** spacemacs-theme
-   #+begin_src emacs-lisp
-     (use-package spacemacs-theme
-       :defer t
-       :init (load-theme 'spacemacs-dark t))
-   #+end_src
-** Modeline
-*** spaceline
-   #+begin_src emacs-lisp
-     (use-package spaceline
-       :straight t
-       :config (require 'spaceline-config)
-       (spaceline-spacemacs-theme))
-   #+end_src
-*** spaceline-all-the-icons
-   #+begin_src emacs-lisp
-     (use-package spaceline-all-the-icons
-       :straight t
-       :after spaceline
-       :config
-       (setq spaceline-all-the-icons-separator-type 'none)
-       (spaceline-all-the-icons-theme))
-   #+end_src
-** Cursor color
 #+begin_src emacs-lisp
-  (set-cursor-color "#ff6b66") 
+  (global-prettify-symbols-mode t)
 #+end_src
 ** rainbow-delimiters
    #+begin_src emacs-lisp
@@ -160,12 +246,12 @@ The older =(global-linum-mode 1)= doesn't work with git-gutter
        :straight t
        :init (which-key-mode))
    #+end_src
-** smex
+** COMMENT smex
    #+begin_src emacs-lisp
      (use-package smex
        :straight t
        :init (smex-initialize)
-       :bind ("s-x" . smex))
+       :bind ("M-x" . smex))
    #+end_src
 ** avy
    #+begin_src emacs-lisp
@@ -177,7 +263,7 @@ The older =(global-linum-mode 1)= doesn't work with git-gutter
    #+begin_src emacs-lisp
      (use-package popup-kill-ring
        :straight t
-       :bind ("s-y" . popup-kill-ring)
+       :bind ("M-y" . popup-kill-ring)
        :config
        (setq popup-kill-ring-interactive-insert t))
    #+end_src
@@ -204,130 +290,6 @@ The older =(global-linum-mode 1)= doesn't work with git-gutter
        (other-window 1))
      (global-set-key (kbd "C-x 3") 'split-window-and-follow-vertically)
    #+end_src
-* Settings
-** Set correct PATH variable
-#+begin_src emacs-lisp
-  (defun set-exec-path-from-shell-PATH ()
-    "Sets the exec-path to the same value used by the user shell.
-     Copied from https://emacs.stackexchange.com/a/4093."
-    (let ((path-from-shell
-           (replace-regexp-in-string
-            "[[:space:]\n]*$" ""
-            (shell-command-to-string "$SHELL -l -c 'echo $PATH'"))))
-      (setenv "PATH" path-from-shell)
-      (setq exec-path (split-string path-from-shell path-separator))))
-
-  ;; call function now
-  (set-exec-path-from-shell-PATH)
-#+end_src
-* Org
-** org-tempo
- #+begin_src emacs-lisp
-   (require 'org-tempo)
- #+end_src
-** org-bullets
-   #+begin_src emacs-lisp
-     (use-package org-bullets
-       :straight t
-       :ensure t
-       :config (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))
-   #+end_src
-** org-log-done
-   #+begin_src emacs-lisp
-     (setq org-log-done 'time)
-   #+end_src
-** org-return-follow-link
-   #+begin_src emacs-lisp
-     (setq org-return-follows-link t)
-   #+end_src
-** COMMENT mix fixed-width with variable-width fonts
-   #+begin_src emacs-lisp
-     (dolist (face '(org-block-begin-line
-                     org-block-end-line
-                     org-verbatim
-                     org-block-background))
-       (set-face-attribute face nil :inherit 'fixed-pitch)
-   #+end_src
-** org files
-   #+begin_src emacs-lisp
-     (custom-set-variables
-      '(org-directory "~/Dropbox/org/")
-      '(org-default-notes-file (concat org-directory "notes.org"))
-      '(org-startup-folded 'overview)
-      '(org-startup-indented t))
-
-     (setq org-agenda-files (list (concat org-directory "agenda.org") (concat org-directory "tasks.org")))
-   #+end_src
-** org-journal
-#+begin_src emacs-lisp
-  (use-package org-journal
-    :straight t
-    :init
-    ;; Change default prefix key; needs to be set before loading org-journal
-    (setq org-journal-prefix-key "C-c j")
-    :config
-    (setq org-journal-dir "~/Dropbox/org/journal/"
-          org-journal-file-type 'monthly
-          org-journal-file-format "%Y-%m.org"
-          org-journal-file-header "#+TITLE: %B %Y"))
-
-  (defun org-journal-find-location ()
-    ;; Open today's journal, but specify a non-nil prefix argument in order to
-    ;; inhibit inserting the heading; org-capture will insert the heading.
-    (org-journal-new-entry t)
-    (unless (eq org-journal-file-type 'daily)
-      (org-narrow-to-subtree))
-    (goto-char (point-max)))
-#+end_src
-** org capture templates
-   #+begin_src emacs-lisp
-     (setq org-capture-templates
-           '(("a" "Agenda entry" entry
-              (file+headline "~/Dropbox/org/agenda.org" "Agenda")
-              "* %?\n:PROPERTIES:\n:ADDRESS: \n:END:\nSCHEDULED: %^T")
-             ("n" "Note" entry
-              (file+headline "~/Dropbox/org/notes.org" "Notes")
-              "* %?\n%U")
-             ("l" "Link" entry
-              (file+headline "~/Dropbox/org/links.org" "Links")
-              "* %?\n%^L \n%U" :prepend t)
-             ("t" "Task" entry
-              (file+headline "~/Dropbox/org/tasks.org" "Tasks")
-              "* TODO %?\nSCHEDULED: %^t\n%U" :prepend t)
-             ("d" "Diary entry" entry
-              (file+olp+datetree "~/Dropbox/org/diary.org")
-              "* %U\n %?\n")
-             ("s" "Snippet" entry
-              (file+headline "~/Dropbox/org/snippets.org" "Snippets")
-              "* %?\n%u")
-             ("j" "Journal entry" plain (function org-journal-find-location)
-              "** %(format-time-string org-journal-time-format)%^{Title}\n%i%?\n\n" :jump-to-captured t)))
-   #+end_src
-** ox-twbs
-#+begin_src emacs-lisp
-  (use-package ox-twbs
-    :straight t
-    :config
-    (setq org-publish-project-alist
-        '(("org-notes"
-           :base-directory "~/Dropbox/org"
-           :publishing-directory "~/public_html/"
-           :publishing-function org-twbs-publish-to-html
-           :with-sub-superscript nil
-           ))))
-#+end_src
-** org-reveal
-   #+begin_src emacs-lisp
-     (use-package ox-reveal
-       :straight t)
-     (setq org-reveal-root "file:///Users/zazon/projects/reveal.js")
-     (setq org-reveal-mathjax t)
-   #+end_src
-** htmlize
-   #+begin_src emacs-lisp
-     (use-package htmlize
-       :straight t)
-   #+end_src
 * evil
 Vim keybindings for emacs
    #+begin_src emacs-lisp
@@ -343,7 +305,11 @@ Vim keybindings for emacs
                    evil-want-Y-yank-to-eol t)
        :config (evil-mode t))
    #+end_src
-** evil-collection
+** Use emacs keybindings in dired
+#+begin_src emacs-lisp
+  (evil-set-initial-state 'dired-mode 'emacs)
+#+end_src
+** COMMENT evil-collection
 Use =evil= keybindings in various other modes
 #+begin_src emacs-lisp
   (use-package evil-collection
@@ -386,6 +352,200 @@ Use =evil= with Org agendas
     (require 'evil-org-agenda)
     (evil-org-agenda-set-keys))
 #+end_src
+* Settings
+** MacOS modifier keys
+Copied from [[https://www.emacswiki.org/emacs/EmacsForMacOS#h5o-31][here]]
+#+begin_src emacs-lisp
+  (when (eq system-type 'darwin) ;; mac specific settings
+    (setq mac-option-modifier 'super)
+    (setq mac-command-modifier 'meta)
+    (setq mac-function-modifier 'hyper))
+#+end_src
+** Set correct PATH variable
+#+begin_src emacs-lisp
+  (defun set-exec-path-from-shell-PATH ()
+    "Sets the exec-path to the same value used by the user shell.
+     Copied from https://emacs.stackexchange.com/a/4093."
+    (let ((path-from-shell
+           (replace-regexp-in-string
+            "[[:space:]\n]*$" ""
+            (shell-command-to-string "$SHELL -l -c 'echo $PATH'"))))
+      (setenv "PATH" path-from-shell)
+      (setq exec-path (split-string path-from-shell path-separator))))
+
+  ;; call function now
+  (set-exec-path-from-shell-PATH)
+#+end_src
+** MacOS safe delete
+#+begin_src emacs-lisp
+  (use-package osx-trash
+    :straight t
+    :config
+    (when (eq system-type 'darwin)
+    (osx-trash-setup))
+    (setq delete-by-moving-to-trash t))
+#+end_src
+* Org
+** org-tempo
+ #+begin_src emacs-lisp
+   (require 'org-tempo)
+ #+end_src
+** Display preferences
+Arrow is prettier than =...=
+#+begin_src emacs-lisp
+  (setq org-ellipsis "⤵")
+#+end_src
+Display asterisks as pretty bullets
+#+begin_src emacs-lisp
+  (use-package org-bullets
+    :straight t
+    :ensure t
+    :config (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))
+#+end_src
+This hides the slashes and stars that denote /emphasis/ and *bold* text.
+#+begin_src emacs-lisp
+  (setq org-hide-emphasis-markers t)
+#+end_src
+Use syntax highlighting in source blocks while editing.
+#+begin_src emacs-lisp
+  (setq org-src-fontify-natively t)
+#+end_src
+** org-log-done
+   #+begin_src emacs-lisp
+     (setq org-log-done 'time)
+   #+end_src
+** org-return-follow-link
+   #+begin_src emacs-lisp
+     (setq org-return-follows-link t)
+   #+end_src
+** org files
+   #+begin_src emacs-lisp
+     (custom-set-variables
+      '(org-directory "~/Dropbox/org/")
+      '(org-default-notes-file (concat org-directory "notes.org"))
+      '(org-startup-folded 'overview)
+      '(org-startup-indented t))
+
+     (setq org-agenda-files (list (concat org-directory "agenda.org")
+                                  (concat org-directory "tasks.org")
+                                  (concat org-directory "journal/2021.org")))
+   #+end_src
+** org-journal
+#+begin_src emacs-lisp
+  (use-package org-journal
+    :straight t
+    :init
+    ;; Change default prefix key; needs to be set before loading org-journal
+    (setq org-journal-prefix-key "C-c j")
+    :config
+    (setq org-journal-dir "~/Dropbox/org/journal/"
+          org-journal-file-type 'yearly
+          org-journal-date-format "%A, %d %B %Y"
+          org-journal-file-format "%Y.org"
+          org-journal-file-header "#+TITLE: %Y"))
+
+  (defun org-journal-find-location ()
+    ;; Open today's journal, but specify a non-nil prefix argument in order to
+    ;; inhibit inserting the heading; org-capture will insert the heading.
+    (org-journal-new-entry t)
+    (unless (eq org-journal-file-type 'daily)
+      (org-narrow-to-subtree))
+    (goto-char (point-max)))
+#+end_src
+** org capture templates 
+The following commands are used to be able to store email links in
+orgmode tasks (copied from [[http://pragmaticemacs.com/emacs/master-your-inbox-with-mu4e-and-org-mode/][here]])
+#+begin_src emacs-lisp
+  (require 'org-mu4e)
+  ;;store link to message if in header view, not to header query
+  (setq org-mu4e-link-query-in-headers-mode nil)
+#+end_src
+Then a =%a= will add a link to the file I am visiting when I invoke
+the capture template.
+#+begin_src emacs-lisp
+  (setq org-capture-templates
+        '(("a" "Agenda entry" entry
+           (file+headline "~/Dropbox/org/agenda.org" "Agenda")
+           "* %?\n:PROPERTIES:\n:ADDRESS: \n:END:\nSCHEDULED: %^T\n%a")
+          ;; do we need notes?
+          ;; ("n" "Note" entry
+          ;;  (file+headline "~/Dropbox/org/notes.org" "Notes")
+          ;;  "* %?\n%U")
+          ("l" "Link" entry
+           (file+headline "~/Dropbox/org/links.org" "Links")
+           "* [[%^{URL}][%^{Name}]]\n%U" :prepend t)
+          ("t" "Task" entry
+           (file+headline "~/Dropbox/org/tasks.org" "Tasks")
+           "* TODO %?\nSCHEDULED: %^t\n%a\n%U" :prepend t)
+          ("s" "Snippet" entry
+           (file+headline "~/Dropbox/org/snippets.org" "Snippets")
+           "* %?\n%u")
+          ("j" "Journal entry" plain (function org-journal-find-location)
+           "** %(format-time-string org-journal-time-format)%^{Title}\n%i%?\n\n" :jump-to-captured t)))
+   #+end_src
+** ox-twbs
+#+begin_src emacs-lisp
+  (use-package ox-twbs
+    :straight t
+    :config
+    (setq org-publish-project-alist
+        '(("org-notes"
+           :base-directory "~/Dropbox/org"
+           :publishing-directory "~/public_html/"
+           :publishing-function org-twbs-publish-to-html
+           :with-sub-superscript nil
+           ))))
+#+end_src
+** org-reveal
+   #+begin_src emacs-lisp
+     (use-package ox-reveal
+       :straight t)
+     (setq org-reveal-root "file:///Users/zazon/projects/reveal.js")
+     (setq org-reveal-mathjax t)
+   #+end_src
+** htmlize
+   #+begin_src emacs-lisp
+     (use-package htmlize
+       :straight t)
+   #+end_src
+** plantuml support
+Install =plantuml-mode=
+#+begin_src emacs-lisp
+  (use-package plantuml-mode
+    :straight t)
+#+end_src
+Copied from [[http://eschulte.github.io/babel-dev/DONE-integrate-plantuml-support.html][here]]
+#+begin_src emacs-lisp
+  ;; active Org-babel languages
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '(;; other Babel languages
+     (plantuml . t)))
+
+  (setq org-plantuml-jar-path
+        (expand-file-name "~/bin/plantuml.jar"))
+#+end_src
+** org-babel
+#+begin_src emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((gnuplot . t)
+     (ditaa . t)
+     (shell . t)
+     (python . t)))
+
+  (setq org-confirm-babel-evaluate nil)
+#+end_src
+* helm
+#+begin_src emacs-lisp
+  (use-package helm
+    :straight t
+    :config
+    (global-set-key (kbd "M-x") #'helm-M-x)
+    (global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
+    (global-set-key (kbd "C-x C-f") #'helm-find-files)
+    (global-set-key (kbd "C-x C-d") #'helm-browse-project))
+#+end_src
 * mu4e
 #+begin_src emacs-lisp
   (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu/mu4e")
@@ -408,7 +568,7 @@ Use =evil= with Org agendas
    mu4e-sent-folder   "/fastmail/Sent"
    mu4e-drafts-folder "/fastmail/Drafts"
    mu4e-trash-folder  "/fastmail/Trash"
-   )
+   user-mail-address "jassak@fastmail.com")
 
   ;; this setting allows to re-sync and re-index mail
   ;; by pressing U
@@ -478,6 +638,10 @@ Multiple accounts setup, [[https://www.djcbsoftware.nl/code/mu/mu4e/Multiple-acc
 
   (add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
 #+end_src
+Fix for duplicate UID errors (copied from [[http://pragmaticemacs.com/emacs/fixing-duplicate-uid-errors-when-using-mbsync-and-mu4e/][here]])
+#+begin_src emacs-lisp
+  (setq mu4e-change-filenames-when-moving t)
+#+end_src
 ** Sending mail over SMTP
 
 I send my email through =msmtp=. These settings describe how to send a message:
@@ -493,6 +657,43 @@ I send my email through =msmtp=. These settings describe how to send a message:
   (setq message-sendmail-f-is-evil 't)
   (setq sendmail-program "msmtp")
 #+end_src
+** Compose mail in Orgmode
+#+begin_src emacs-lisp
+  (use-package org-msg
+    :straight t
+    :config
+    (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil author:nil email:nil \\n:t"
+          org-msg-startup "hidestars indent inlineimages"
+          org-msg-default-alternatives '(text html)))
+#+end_src
+* Ledger
+I need to install =ledger= first.
+#+begin_src bash
+  brew install ledger
+#+end_src
+Config copied from [[https://github.com/rememberYou/.emacs.d/blob/master/config.org#ledger][here]]
+#+begin_src emacs-lisp
+  (use-package ledger-mode
+    :straight t
+    :mode ("\\.dat\\'"
+           "\\.ledger\\'")
+    :bind (:map ledger-mode-map
+                ("C-x C-s" . my/ledger-save))
+    :hook (ledger-mode . ledger-flymake-enable)
+    :preface
+    (defun my/ledger-save ()
+      "Automatically clean the ledger buffer at each save."
+      (interactive)
+      (ledger-mode-clean-buffer)
+      (save-buffer))
+    :custom
+    (ledger-clear-whole-transactions t)
+    (ledger-reconcile-default-commodity "EUR"))
+
+  (use-package flycheck-ledger
+    :straight t
+    :after ledger-mode)
+#+end_src
 * Project managment
 ** magit
    #+begin_src emacs-lisp
@@ -507,17 +708,21 @@ I send my email through =msmtp=. These settings describe how to send a message:
     (global-git-gutter-mode t))
 #+end_src
 ** projectile
+I set =projectile-auto-discover= to nil so I decide where my projects are.
    #+begin_src emacs-lisp
      (use-package projectile
        :straight t
        :config
        (projectile-global-mode)
-       (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-       (setq projectile-project-search-path '("~/projects/"))
-       (setq projectile-auto-discover t)
+       (define-key projectile-mode-map (kbd "M-p") 'projectile-command-map)
+       ;; (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+       (setq projectile-project-search-path '("~/projects/"
+                                              "~/Dropbox/org/"
+                                              "~/madgik/"))
+       (setq projectile-auto-discover nil)
        (setq projectile-completion-system 'ido))
    #+end_src
-*** org-projectile
+** org-projectile
     #+begin_src emacs-lisp
       (use-package org-projectile
         :straight t
@@ -540,9 +745,9 @@ I send my email through =msmtp=. These settings describe how to send a message:
        :config
        (setq show-week-agenda-p t)
        (setq dashboard-items '((recents . 5)
-                               (agenda . 5)
                                (projects . 5)
-                               (bookmarks . 5)))
+                               (bookmarks . 5)
+                               (agenda . 10)))
        (setq dashboard-set-heading-icons t)
        (setq dashboard-set-file-icons t)
        (setq dashboard-startup-banner 'logo)
@@ -648,41 +853,79 @@ I send my email through =msmtp=. These settings describe how to send a message:
   ;;   :straight t
   ;;   :config (treemacs-set-scope-type 'Perspectives))
 #+end_src
+** ag
+#+begin_src emacs-lisp
+  (use-package ag
+    :straight t)
+#+end_src
+** dumb-jump
+#+begin_src emacs-lisp
+  (use-package dumb-jump
+    :straight t
+    :config
+    (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+    (define-key evil-normal-state-map (kbd "M-.") 'xref-find-definitions))
+#+end_src
+The xref-find-definitions function creates an XREF buffer of results
+if more than one thing matches. That’s inconvenient, I’d rather use
+Ivy to select among them.
+#+begin_src emacs-lisp
+  (use-package ivy-xref
+    :straight t
+    :init
+    (setq xref-show-definitions-function #'ivy-xref-show-defs))
+#+end_src
 * Programming
 ** Snippets
 *** yasnippet
-   #+begin_src emacs-lisp
-     (use-package yasnippet
-       :straight t
-       :config
-       (use-package yasnippet-snippets
-         :straight t)
-       (yas-reload-all)
-       (add-hook 'emacs-lisp-mode 'yas-minor-mode)
-       (add-hook 'python-mode-hook 'yas-minor-mode))
-   #+end_src
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :straight t
+    :config
+    (use-package yasnippet-snippets
+      :straight t)
+    (yas-reload-all)
+    (add-hook 'emacs-lisp-mode 'yas-minor-mode)
+    (add-hook 'python-mode-hook 'yas-minor-mode))
+#+end_src
+*** auto-yasnippet
+#+begin_src emacs-lisp
+  (use-package auto-yasnippet
+    :straight t
+    :config
+    (global-set-key (kbd "H-c") #'aya-create)
+    (global-set-key (kbd "H-v") #'aya-expand))
+#+end_src
 ** Autocompletion
 *** company-mode
-   #+begin_src emacs-lisp
-     (use-package company
-       :straight t
-       :init
-       (setq company-idle-delay 0)
-       (setq company-minimum-prefix-length 3)
-       (setq company-selection-wrap-around t)
-       (add-hook 'after-init-hook 'global-company-mode))
-     (with-eval-after-load 'company
-       (define-key company-active-map (kbd "M-n") nil)
-       (define-key company-active-map (kbd "M-p") nil)
-       (define-key company-active-map (kbd "C-n") #'company-select-next)
-       (define-key company-active-map (kbd "C-p") #'company-select-previous))
-   #+end_src
+#+begin_src emacs-lisp
+  (use-package company
+    :straight t
+    :init
+    (setq company-idle-delay 0)
+    (setq company-minimum-prefix-length 3)
+    (setq company-selection-wrap-around t)
+    (add-hook 'after-init-hook 'global-company-mode))
+  (with-eval-after-load 'company
+    (define-key company-active-map (kbd "M-n") nil)
+    (define-key company-active-map (kbd "M-p") nil)
+    (define-key company-active-map (kbd "C-n") #'company-select-next)
+    (define-key company-active-map (kbd "C-p") #'company-select-previous))
+#+end_src
 *** company-quickhelp
-   #+begin_src emacs-lisp
-     (use-package company-quickhelp
-       :straight t
-       :init (company-quickhelp-mode))
-   #+end_src
+#+begin_src emacs-lisp
+  (use-package company-quickhelp
+    :straight t
+    :init (company-quickhelp-mode))
+#+end_src
+*** company-box
+Add icons to completion menu
+#+begin_src emacs-lisp
+  (use-package company-box
+    :after company
+    :straight t
+    :hook (company-mode . company-box-mode))
+#+end_src
 ** Markdown
 #+begin_src emacs-lisp
   (use-package markdown-mode
@@ -692,6 +935,13 @@ I send my email through =msmtp=. These settings describe how to send a message:
            ("\\.md\\'" . markdown-mode)
            ("\\.markdown\\'" . markdown-mode))
     :init (setq markdown-command "multimarkdown"))
+#+end_src
+Livedown for realtime Markdown editing
+#+begin_src emacs-lisp
+  (use-package livedown
+    :straight t)
+
+  (global-set-key (kbd "C-s-m") 'livedown-preview)
 #+end_src
 ** Docker
 #+begin_src emacs-lisp
@@ -717,10 +967,10 @@ I send my email through =msmtp=. These settings describe how to send a message:
        (add-hook 'python-mode-hook (lambda () (hs-minor-mode)))
        (add-hook 'elpy-mode-hook (lambda () (highlight-indentation-mode -1))))
    #+end_src
-*** python as python-shell-interpreter
+*** ipython as python-shell-interpreter
    #+begin_src emacs-lisp
-     (setq python-shell-interpreter "python"
-           python-shell-interpreter-args "-i")
+     (setq python-shell-interpreter "ipython"
+           python-shell-interpreter-args "-i --simple-prompt")
    #+end_src
 *** COMMENT company-jedi
    #+begin_src emacs-lisp
@@ -735,10 +985,40 @@ I send my email through =msmtp=. These settings describe how to send a message:
   (use-package haskell-mode
     :straight t)
 #+end_src
+** Gnuplot
+*** COMMENT gnuplot-mode
+#+begin_src emacs-lisp
+  (use-package gnuplot-mode
+    :straight t
+    :config
+    (autoload 'gnuplot-mode "gnuplot" "Gnuplot major mode" t)
+    (autoload 'gnuplot-make-buffer "gnuplot" "open a buffer in gnuplot-mode" t)
+    (setq auto-mode-alist (append '(("\\.gp$" . gnuplot-mode)) auto-mode-alist)))
+#+end_src
+*** gnuplot.el
+#+begin_src emacs-lisp
+  (use-package gnuplot
+    :straight t)
+#+end_src
+** web-mode
+Copied from [[https://web-mode.org/][here]]
+#+begin_src emacs-lisp
+  (use-package web-mode
+    :straight t
+    :config
+    (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
+#+end_src
 * Keybindings
 *** other-window
     #+begin_src emacs-lisp
-      (global-set-key (kbd "s-o") 'other-window)
+      (global-set-key (kbd "M-o") 'other-window)
     #+end_src
 *** buffer switching
    #+begin_src emacs-lisp
@@ -754,7 +1034,11 @@ I send my email through =msmtp=. These settings describe how to send a message:
     #+end_src
 *** open mu4e
 #+begin_src emacs-lisp
-  (global-set-key (kbd "s-m") 'mu4e)
+  (global-set-key (kbd "M-m") 'mu4e)
+#+end_src
+*** kill-buffer-and-window by default
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-x k") 'kill-buffer-and-window)
 #+end_src
 ** config edit/reload
 *** edit
@@ -772,7 +1056,7 @@ I send my email through =msmtp=. These settings describe how to send a message:
       (global-set-key (kbd "C-c r") 'config-reload)
     #+end_src
 * Terminal
-We use =vterm= which seems faster than =ansi-term=. Installation:
+I use =vterm= which seems faster than =ansi-term=. Installation:
 #+begin_src bash
   brew install cmake
   brew install libtool
@@ -788,9 +1072,24 @@ We use =vterm= which seems faster than =ansi-term=. Installation:
     :load-path  "~/.emacs.d/straight/build/vterm/vterm-module.so")
 #+end_src
 #+begin_src emacs-lisp
-  (global-set-key (kbd "<s-return>") 'vterm)
+  (global-set-key (kbd "<M-return>") 'vterm)
 #+end_src
 Don't use evil bindings in terminal
 #+begin_src emacs-lisp
   (evil-set-initial-state 'vterm-mode 'emacs)
+#+end_src
+* COMMENT pdf-tools
+Following [[https://github.com/politza/pdf-tools#compiling-on-os-x][this guide]] I first need to install some libraries in MacOS
+#+begin_src bash
+  brew install poppler automake
+#+end_src
+Then I need to set this env variable
+#+begin_src emacs-lisp
+  ;; (setenv "PKG_CONFIG_PATH" "/usr/local/lib/pkgconfig:/usr/local/Cellar/libffi/3.3_3/lib/pkgconfig")
+  (setenv "PKG_CONFIG_PATH" (concat (shell-command-to-string "printf %s \"$(brew --prefix libffi)\"") "/lib/pkgconfig/"))
+#+end_src
+#+begin_src emacs-lisp
+  (use-package pdf-tools
+    :straight t)
+  (pdf-tools-install)
 #+end_src
