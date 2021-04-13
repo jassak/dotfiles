@@ -14,5 +14,12 @@
     "python.linting.flake8Enabled": true,
     "python.linting.flake8Path": "/Users/zazon/.local/bin/flake8",
     "python.linting.lintOnSave": true,
-    "python.venvPath": "~/.virtualenvs/"
+    "python.venvPath": "~/.virtualenvs/",
+    "terminal.REPLMappings": {
+        "c": "cling",
+        "cpp": "cling",
+        "javascript": "node",
+        "typescript": "ts-node",
+        "python": "ipython"
+    }
 }
