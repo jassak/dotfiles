@@ -1,7 +1,7 @@
 #+STARTUP: overview
 * Emacs Installation
 ** Macos
-   #+begin_src bash
+   #+begin_src shell
      brew install emacs-plus@28 --with-modern-papirus-icon --with-xwidgets --with-mailutils
      ln -s /usr/local/opt/emacs-plus@28/Emacs.app /Applications
    #+end_src
@@ -210,6 +210,11 @@ The older =(global-linum-mode 1)= doesn't work with git-gutter
        (kill-buffer (current-buffer)))
      (global-set-key (kbd "C-x k") 'kill-current-buffer)
    #+end_src
+** better-defaults
+   #+begin_src emacs-lisp
+     (use-package better-defaults
+       :straight t)
+   #+end_src
 ** Enable IDO mode
   #+begin_src emacs-lisp
     (setq ido-enable-flex-matching t)
@@ -235,23 +240,18 @@ The older =(global-linum-mode 1)= doesn't work with git-gutter
        (setq ido-enable-flex-matching t)
        (setq ido-use-faces nil))
    #+end_src
-** better-defaults
-   #+begin_src emacs-lisp
-     (use-package better-defaults
-       :straight t)
-   #+end_src
-** which-key
-   #+begin_src emacs-lisp
-     (use-package which-key
-       :straight t
-       :init (which-key-mode))
-   #+end_src
 ** COMMENT smex
    #+begin_src emacs-lisp
      (use-package smex
        :straight t
        :init (smex-initialize)
        :bind ("M-x" . smex))
+   #+end_src
+** which-key
+   #+begin_src emacs-lisp
+     (use-package which-key
+       :straight t
+       :init (which-key-mode))
    #+end_src
 ** avy
    #+begin_src emacs-lisp
@@ -317,7 +317,7 @@ Use =evil= keybindings in various other modes
     :straight t
     :config
     (setq evil-collection-mode-list
-          '(dired magit mu4e which-key))
+          '(magit mu4e which-key))
     (evil-collection-init))
 #+end_src
 ** evil-surround
@@ -428,7 +428,8 @@ Use syntax highlighting in source blocks while editing.
 
      (setq org-agenda-files (list (concat org-directory "agenda.org")
                                   (concat org-directory "tasks.org")
-                                  (concat org-directory "journal/2021.org")))
+                                  (concat org-directory "journal/2021.org")
+                                  (concat org-directory "agenda.org_archive")))
    #+end_src
 ** org-journal
 #+begin_src emacs-lisp
@@ -467,6 +468,9 @@ the capture template.
         '(("a" "Agenda entry" entry
            (file+headline "~/Dropbox/org/agenda.org" "Agenda")
            "* %?\n:PROPERTIES:\n:ADDRESS: \n:END:\nSCHEDULED: %^T\n%a")
+          ("e" "Exercise log" entry
+           (file+headline "~/Dropbox/org/exercise.org" "Log")
+           "* %u\n%?")
           ;; do we need notes?
           ;; ("n" "Note" entry
           ;;  (file+headline "~/Dropbox/org/notes.org" "Notes")
@@ -479,6 +483,9 @@ the capture template.
            "* TODO %?\nSCHEDULED: %^t\n%a\n%U" :prepend t)
           ("s" "Snippet" entry
            (file+headline "~/Dropbox/org/snippets.org" "Snippets")
+           "* %?\n%u")
+          ("r" "Recipe" entry
+           (file+headline "~/Dropbox/org/recipes.org" "Recipes")
            "* %?\n%u")
           ("j" "Journal entry" plain (function org-journal-find-location)
            "** %(format-time-string org-journal-time-format)%^{Title}\n%i%?\n\n" :jump-to-captured t)))
@@ -516,12 +523,6 @@ Install =plantuml-mode=
 #+end_src
 Copied from [[http://eschulte.github.io/babel-dev/DONE-integrate-plantuml-support.html][here]]
 #+begin_src emacs-lisp
-  ;; active Org-babel languages
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '(;; other Babel languages
-     (plantuml . t)))
-
   (setq org-plantuml-jar-path
         (expand-file-name "~/bin/plantuml.jar"))
 #+end_src
@@ -532,19 +533,43 @@ Copied from [[http://eschulte.github.io/babel-dev/DONE-integrate-plantuml-suppor
    '((gnuplot . t)
      (ditaa . t)
      (shell . t)
-     (python . t)))
+     (python . t)
+     (plantuml . t)))
 
   (setq org-confirm-babel-evaluate nil)
 #+end_src
 * helm
 #+begin_src emacs-lisp
   (use-package helm
-    :straight t
-    :config
-    (global-set-key (kbd "M-x") #'helm-M-x)
-    (global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
-    (global-set-key (kbd "C-x C-f") #'helm-find-files)
-    (global-set-key (kbd "C-x C-d") #'helm-browse-project))
+    :straight t)
+
+  ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
+  ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
+  ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
+  (global-set-key (kbd "C-c h") 'helm-command-prefix)
+  (global-unset-key (kbd "C-x c"))
+
+  (global-set-key (kbd "M-x") #'helm-M-x)
+  (global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
+  (global-set-key (kbd "C-x C-f") #'helm-find-files)
+  (global-set-key (kbd "C-x C-d") #'helm-browse-project)
+  (global-set-key (kbd "C-x b") #'helm-buffers-list)
+
+  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to run persistent action
+  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB work in terminal
+  (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+
+  (when (executable-find "curl")
+    (setq helm-google-suggest-use-curl-p t))
+
+  (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+        helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+        helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+        helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+        helm-ff-file-name-history-use-recentf t
+        helm-echo-input-in-header-line t)
+
+  (setq helm-M-x-fuzzy-match t)                 ; optional fuzzy matching for helm-M-x
 #+end_src
 * mu4e
 #+begin_src emacs-lisp
@@ -756,6 +781,10 @@ I set =projectile-auto-discover= to nil so I decide where my projects are.
        (setq dashboard-set-footer nil)
        (setq dashboard-org-agenda-categories '("Tasks" "Appointments"))
        (dashboard-setup-startup-hook))
+
+     ;; exclude some patterns from recent files to avoid having them in dashboard
+     (add-to-list 'recentf-exclude "\\.org\\'")
+     (add-to-list 'recentf-exclude "bookmarks")
    #+end_src
 ** treemacs
 #+begin_src emacs-lisp
@@ -967,6 +996,13 @@ Livedown for realtime Markdown editing
        (add-hook 'python-mode-hook (lambda () (hs-minor-mode)))
        (add-hook 'elpy-mode-hook (lambda () (highlight-indentation-mode -1))))
    #+end_src
+*** COMMENT python keybindings
+**** TODO How to define python specific evil keys?
+#+begin_src emacs-lisp
+  ;; (add-hook 'python-mode-hook
+  ;;           (lambda ()
+  ;;             (evil-define-key 'normal 'global "SPC b" "Obreakpoint()")))
+#+end_src
 *** ipython as python-shell-interpreter
    #+begin_src emacs-lisp
      (setq python-shell-interpreter "ipython"
@@ -1015,6 +1051,17 @@ Copied from [[https://web-mode.org/][here]]
     (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
 #+end_src
+** Yaml
+#+begin_src emacs-lisp
+  (use-package yaml-mode
+    :straight t
+    :config
+    (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode)))
+
+  (add-hook 'yaml-mode-hook
+        '(lambda ()
+          (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+#+end_src
 * Keybindings
 *** other-window
     #+begin_src emacs-lisp
@@ -1022,7 +1069,6 @@ Copied from [[https://web-mode.org/][here]]
     #+end_src
 *** buffer switching
    #+begin_src emacs-lisp
-     (global-set-key (kbd "C-x b") 'ido-switch-buffer)
      (global-set-key (kbd "C-x C-b") 'ibuffer)
    #+end_src
 *** vim-like window navigation
@@ -1036,7 +1082,7 @@ Copied from [[https://web-mode.org/][here]]
 #+begin_src emacs-lisp
   (global-set-key (kbd "M-m") 'mu4e)
 #+end_src
-*** kill-buffer-and-window by default
+*** COMMENT kill-buffer-and-window by default
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-x k") 'kill-buffer-and-window)
 #+end_src
@@ -1072,7 +1118,7 @@ I use =vterm= which seems faster than =ansi-term=. Installation:
     :load-path  "~/.emacs.d/straight/build/vterm/vterm-module.so")
 #+end_src
 #+begin_src emacs-lisp
-  (global-set-key (kbd "<M-return>") 'vterm)
+  (global-set-key (kbd "<s-return>") 'vterm)
 #+end_src
 Don't use evil bindings in terminal
 #+begin_src emacs-lisp
@@ -1086,10 +1132,21 @@ Following [[https://github.com/politza/pdf-tools#compiling-on-os-x][this guide]]
 Then I need to set this env variable
 #+begin_src emacs-lisp
   ;; (setenv "PKG_CONFIG_PATH" "/usr/local/lib/pkgconfig:/usr/local/Cellar/libffi/3.3_3/lib/pkgconfig")
-  (setenv "PKG_CONFIG_PATH" (concat (shell-command-to-string "printf %s \"$(brew --prefix libffi)\"") "/lib/pkgconfig/"))
+  ;; (setenv "PKG_CONFIG_PATH" (concat (shell-command-to-string "printf %s \"$(brew --prefix libffi)\"") "/lib/pkgconfig/"))
+  (setenv "PKG_CONFIG_PATH"
+          (f-join
+           (file-name-as-directory
+            (nth 0
+                 (split-string
+                  (shell-command-to-string "brew --prefix"))))
+           "Cellar" "libffi" "3.2.1" "lib" "pkgconfig"))
 #+end_src
 #+begin_src emacs-lisp
   (use-package pdf-tools
-    :straight t)
+    :straight t
+    :config
+    (custom-set-variables
+     '(pdf-tools-handle-upgrades nil)) ; Use brew upgrade pdf-tools instead.
+    (setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo"))
   (pdf-tools-install)
 #+end_src
