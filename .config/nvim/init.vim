@@ -28,7 +28,7 @@ set listchars=tab:▸\ ,eol:¬,extends:»,precedes:«,trail:•,nbsp:⎵
 set noerrorbells visualbell t_vb=    " disable annoying error noises
 set noshowmode                       " don't need since we have statusline
 set number                           " show line numbers
-" set relativenumber                   " relative line numbers by default
+set relativenumber                   " relative line numbers by default
 set scrolloff=8                      " keep action in middle of screen
 set shortmess+=c                     " don't pass messages to |ins-completion-menu|.
 set showcmd                          " show command in bottom bar
@@ -38,6 +38,7 @@ set splitbelow                       " open new vertical split bottom
 set splitright                       " open new horizontal splits right
 set tabstop=4 shiftwidth=4 expandtab " 4 spaces instead of tabs
 set ttyfast                          " optimize for fast terminal connections
+set timeoutlen=1000                  " short waiting time for comined key maps
 set noswapfile
 set nobackup
 set undodir=~/.vimdid                " permanent undo
@@ -46,6 +47,7 @@ set undolevels=2000                  " huge undo because why not
 set updatetime=100
 set wildmenu                         " visual autocomplete for command menu
 set nowrap
+set completeopt=menuone,noinsert     " Do not insert any text for a match until the user selects a match
 set t_ZH=[3m                       " correctly render italics
 set t_ZR=[23m                      " correctly render italics
 
@@ -58,8 +60,8 @@ inoremap <Up> <C-K>
 inoremap <Down> <C-J>
 inoremap <Left> <BS>
 inoremap <Right> <Nop>
-nnoremap <Up> mmgUiw`m
-nnoremap <Down> mmguiw`m
+nnoremap <Up> gUiww
+nnoremap <Down> guiww
 nnoremap <Left> :bp<CR>
 nnoremap <right> :bn<CR>
 nnoremap <Silent> # #zz
@@ -75,7 +77,7 @@ nnoremap <Silent> ]m ]mzz
 nnoremap <Silent> [m [mzz
 nnoremap <Silent> ]M ]Mzz
 nnoremap <Silent> [M [Mzz
-nnoremap <CR> @@
+" nnoremap <CR> @@
 nnoremap <BS> <C-^>
 nnoremap H ^
 nnoremap L $
@@ -99,7 +101,7 @@ xnoremap ∂ yg`]p
 " paste in visual mode
 vnoremap p "_dP
 
-tnoremap <C-[><C-[> <C-\><C-n>
+tnoremap Ω <C-\><C-n>
 tnoremap ˙ <C-\><C-N><C-w>h
 tnoremap ∆ <C-\><C-N><C-w>j
 tnoremap ˚ <C-\><C-N><C-w>k
@@ -115,16 +117,25 @@ nnoremap ¬ <C-w>l
 tnoremap ç <C-\><C-N>:close<CR>
 nnoremap ç :close<CR>
 tnoremap œ <C-\><C-n>:bd!<CR>
-nnoremap œ <C-\><C-n>:bd!<CR>
+nnoremap œ <C-\><C-n>:bd<CR>
 tnoremap <silent>∑ <C-\><C-n>:CocCommand terminal.Toggle<CR>
+
+" Go to definition in other vertical window
+" https://stackoverflow.com/questions/33600608/how-to-cause-ctags-to-show-tag-definition-on-vertical-split-without-opening-a-ne/33603586#answer-33603586
+nnoremap <c-]> <c-]>zz
+nnoremap <c-w><c-]> :only<bar>vsplit<CR>:execute "tag " . expand('<cword>')<CR>
+nnoremap <c-p><c-]> :only<bar>vsplit<CR>:execute "tag " . expand('<cword>')<CR><c-w>w
 
 " {{{2 leader keymaps
 let mapleader=" "       " leader is space
 nnoremap <leader>/ :History/<CR>
 nnoremap <leader>; :History:<CR>
 nnoremap <leader><Leader> za
+nnoremap <Leader>a :Ag<CR>
+xnoremap <leader>a y`>:Ag "<Cr>
 nnoremap <Leader>b :Buffers<CR>
 nnoremap <leader>c :cw<CR>
+nnoremap <leader>d :BD<CR>
 nnoremap <leader>e :GFiles<CR>
 nnoremap <leader>f :Files<CR>
 nnoremap <leader>gg :Commits<CR>
@@ -155,26 +166,26 @@ noremap <leader>p "+p
 noremap <leader>y "+y
 noremap <silent><leader>z :Goyo<CR>
 xnoremap <Leader><leader> zf
-xnoremap <leader>= y`>a = ^R=^R"<Cr><ESC>
+xnoremap <leader>= y`>a = ="<Cr><ESC>
 
 " {{{3 Vimspector
-" General
-nnoremap <leader>dd :call vimspector#Launch()<CR>
-nnoremap <leader>dq :call vimspector#Reset()<CR>
-nmap <leader>d<BS> <Plug>VimspectorRestart
-" Motions
-nmap <leader>d<space> <Plug>VimspectorStepOver
-nmap <leader>di <Plug>VimspectorStepIn
-nmap <leader>do <Plug>VimspectorStepOut
-nmap <leader>drc <Plug>VimspectorRunToCursor
-nnoremap <leader>dc :call vimspector#Continue()<CR>
-" Breakpoints
-nmap <leader>db <Plug>VimspectorToggleBreakpoint
-nmap <leader>dcb <Plug>VimspectorToggleConditionalBreakpoint
-nmap <leader>dxb :call vimspector#ClearBreakpoints()<CR>
-" Eval
-nnoremap <leader>de :VimspectorEval<space>
-nnoremap <leader>dw :VimspectorWatch<space>
+" " General
+" nnoremap <leader>dd :call vimspector#Launch()<CR>
+" nnoremap <leader>dq :call vimspector#Reset()<CR>
+" nmap <leader>d<BS> <Plug>VimspectorRestart
+" " Motions
+" nmap <leader>d<space> <Plug>VimspectorStepOver
+" nmap <leader>di <Plug>VimspectorStepIn
+" nmap <leader>do <Plug>VimspectorStepOut
+" nmap <leader>drc <Plug>VimspectorRunToCursor
+" nnoremap <leader>dc :call vimspector#Continue()<CR>
+" " Breakpoints
+" nmap <leader>db <Plug>VimspectorToggleBreakpoint
+" nmap <leader>dcb <Plug>VimspectorToggleConditionalBreakpoint
+" nmap <leader>dxb :call vimspector#ClearBreakpoints()<CR>
+" " Eval
+" nnoremap <leader>de :VimspectorEval<space>
+" nnoremap <leader>dw :VimspectorWatch<space>
 " }}}
 
 function! ToggleSpellcheck()
@@ -196,7 +207,7 @@ endfunc
 " }}}
 
 " mip algos stdout
-tnoremap ø import sys; sys.stdout = sys.__stdout__
+" tnoremap ø import sys; sys.stdout = sys.__stdout__
 iabbrev pdb __import__('pdb').set_trace()
 iabbrev improt import
 iabbrev imoprt import
@@ -228,22 +239,29 @@ Plug 'mbbill/undotree'
 Plug 'mhinz/vim-startify'
 Plug 'neovimhaskell/haskell-vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
 Plug 'plasticboy/vim-markdown'
 Plug 'preservim/tagbar'
 Plug 'puremourning/vimspector'
+Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
 Plug 'rizzatti/dash.vim'
 Plug 'szw/vim-maximizer'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-vinegar'
+Plug 'tpope/vim-rsi'
 Plug 'prendradjaja/vim-vertigo'
 Plug 'vim-ruby/vim-ruby'
 Plug 'vimwiki/vimwiki'
 Plug 'wlangstroth/vim-racket'
 Plug 'jpalardy/vim-slime'
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'skywind3000/gutentags_plus'
+Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
+Plug 'mileszs/ack.vim'
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 call plug#end()
 
 " }}}1
@@ -268,8 +286,27 @@ let g:fzf_commits_log_options = '--graph --color=always --format="%C(auto)%h%d %
 let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-s': 'split',
-  \ 'ctrl-v': 'vsplit' }
+  \ 'ctrl-v': 'vsplit',
+  \ 'ctrl-d': 'bd' }
 let g:fzf_layout = { 'down': '40%' }
+
+"FZF Buffer Delete
+function! s:list_buffers()
+  redir => list
+  silent ls
+  redir END
+  return split(list, "\n")
+endfunction
+
+function! s:delete_buffers(lines)
+  execute 'bwipeout' join(map(a:lines, {_, line -> split(line)[0]}))
+endfunction
+
+command! BD call fzf#run(fzf#wrap({
+  \ 'source': s:list_buffers(),
+  \ 'sink*': { lines -> s:delete_buffers(lines) },
+  \ 'options': '--multi --reverse --bind ctrl-a:select-all+accept'
+\ }))
 " }}}
 
 " {{{2 lightline
@@ -314,6 +351,7 @@ let g:cabal_indent_section = 2
 " }}}
 
 " {{{2 semshi
+let g:semshi#excluded_hl_groups = ['local', 'unresolved']
 let g:semshi#always_update_all_highlights = v:true
 " }}}
 
@@ -548,6 +586,45 @@ onoremap <silent> <Space>k :<C-U>VertigoUp o<CR>
 let g:slime_target = "neovim"
 " }}}
 
+" {{{2 vim-repeat
+silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)
+" }}}
+
+" {{{2 vim-gutentags
+" enable gtags module
+let g:gutentags_modules = ['ctags', 'gtags_cscope']
+" generate datebases in my cache directory, prevent gtags files polluting my project
+let g:gutentags_cache_dir = expand('~/.cache/tags')
+" }}}
+
+" {{{2 ack
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
+" }}}
+
+" {{{2 pymode
+let g:pymode = 1
+let g:pymode_warnings = 1
+let g:pymode_trim_whitespaces = 1
+let g:pymode_options = 0
+let g:pymode_options_max_line_length = 88
+let g:pymode_folding = 1
+let g:pymode_motion = 1
+let g:pymode_doc = 1
+let g:pymode_doc_bind = 'K'
+let g:pymode_run = 1
+let g:pymode_run_bind = '<localleader>a'
+let g:pymode_breakpoint = 1
+let g:pymode_breakpoint_bind = '<localleader>b'
+let g:pymode_lint_on_write = 0
+let g:pymode_lint_options_pep8 = {'max_line_length': g:pymode_options_max_line_length}
+let g:pymode_lint_options_pylint = {'max-line-length': g:pymode_options_max_line_length}
+let g:pymode_lint_cwindow = 1
+let g:pymode_rope_lookup_project = 1
+let g:pymode_rope_regenerate_on_write = 1
+let g:pymode_syntax = 0
+" }}}
 " }}}
 
 " {{{1 Autocommands
@@ -580,6 +657,7 @@ function! s:goyo_enter()
 endfunction
 
 function! s:goyo_leave()
+  " doautocmd Syntax
   if executable('tmux') && strlen($TMUX)
     silent !tmux set status on
     silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
@@ -589,22 +667,42 @@ endfunction
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
 autocmd! User GoyoLeave nested call <SID>goyo_leave()
 
+function! PythonFilenameToModule()
+    let l:fname = expand("%")
+    let l:tmp = substitute(l:fname, "/", ".", "g")
+    return substitute(l:tmp, ".py$", "", "")
+endfunction
+
+
 " {{{2 Python
 augroup filetype_py
     autocmd!
     autocmd FileType python set colorcolumn=89
-    autocmd FileType python nnoremap <buffer> <LocalLeader>r :w<CR>:split term://python %<CR>i
-    autocmd FileType python nnoremap <buffer> <LocalLeader>d :w<CR>:split term://python -m pdb %<CR>i
+    autocmd FileType python nnoremap <leader><Leader> zA
+    autocmd FileType python nnoremap <buffer> <LocalLeader>r :w<CR>:execute "split term://python -m " . PythonFilenameToModule()<CR>
+    autocmd FileType python xnoremap <buffer> <LocalLeader>r :w<CR>:'<,'>CocAction refactor<CR>
+    autocmd FileType python nnoremap <buffer> <LocalLeader>d :w<CR>:execute "split term://python -m pdb -m " . PythonFilenameToModule()<CR>i
     autocmd FileType python nnoremap <buffer> <LocalLeader>p :w<CR>:split term://python -m cProfile --sort=cumtime %<CR>i
-    autocmd FileType python nnoremap <buffer> <LocalLeader>i :w<CR>:split term://ipython -i %<CR>i
-    autocmd FileType python nnoremap <buffer> <LocalLeader>s :w<CR>:split term://python -i %<CR>i
-    autocmd FileType python nnoremap <buffer> <LocalLeader>vr :w<CR>:vsplit term://python %<CR>i
-    autocmd FileType python nnoremap <buffer> <LocalLeader>vd :w<CR>:vsplit term://python -m pdb %<CR>i
+    autocmd FileType python nnoremap <buffer> <LocalLeader>i :w<CR>:execute "split term://ipython -i -m " .PythonFilenameToModule()<CR>i
+    autocmd FileType python nnoremap <buffer> <LocalLeader>s :w<CR>:execute "split term://python -i -m " . PythonFilenameToModule()<CR>i
+    autocmd FileType python nnoremap <buffer> <LocalLeader>ta :w<CR>:split term://pytest %<CR>i
+    autocmd FileType python nnoremap <buffer> <LocalLeader>td :w<CR>:split term://pytest --lf --pdb %<CR>i
+    autocmd FileType python nnoremap <buffer> <LocalLeader>tx :w<CR>:split term://pytest -x %<CR>i
+    autocmd FileType python nnoremap <buffer> <LocalLeader>tt :w<CR>:split term://pytest --lf %<CR>i
+    autocmd FileType python nnoremap <buffer> <LocalLeader>tv :w<CR>:split term://pytest --lf -vvv %<CR>i
+    autocmd FileType python nnoremap <buffer> <LocalLeader>tr :w<CR>:split term://pytest --lf --trace %<CR>i
+    autocmd FileType python nnoremap <buffer> <LocalLeader>tc :w<CR>:split term://coverage run --source=. -m pytest % && coverage html<CR>i
+    autocmd FileType python nnoremap <buffer> <LocalLeader>vr :w<CR>:execute "vsplit term://python -m " . PythonFilenameToModule()<CR>i
+    autocmd FileType python nnoremap <buffer> <LocalLeader>vd :w<CR>:execute "vsplit term://python -m pdb -m " . PythonFilenameToModule()<CR>i
     autocmd FileType python nnoremap <buffer> <LocalLeader>vp :w<CR>:vsplit term://python -m cProfile --sort=cumtime %<CR>i
-    autocmd FileType python nnoremap <buffer> <LocalLeader>vi :w<CR>:vsplit term://ipython -i %<CR>i
-    autocmd FileType python nnoremap <buffer> <LocalLeader>vs :w<CR>:vsplit term://python -i %<CR>i
-    autocmd FileType python nnoremap <buffer> <LocalLeader>c :call PasteCommentBox()<CR>
-    autocmd FileType python nnoremap <buffer> <LocalLeader>f :Format<CR>:CocCommand pyright.organizeimports<CR>
+    autocmd FileType python nnoremap <buffer> <LocalLeader>vi :w<CR>:execute "vsplit term://ipython -i -m " . PythonFilenameToModule()<CR>i
+    autocmd FileType python nnoremap <buffer> <LocalLeader>vs :w<CR>:execute "vsplit term://python -i -m " . PythonFilenameToModule()<CR>i
+    autocmd FileType python nnoremap <buffer> <LocalLeader>nd :w<CR>:execute "tabnew term://python -m pdb -m " . PythonFilenameToModule()<CR>i
+    autocmd FileType python nnoremap <buffer> <LocalLeader>ni :w<CR>:execute "tabnew term://ipython -i -m " . PythonFilenameToModule()<CR>i
+    " autocmd FileType python nnoremap <buffer> <LocalLeader>c :call PasteCommentBox()<CR>
+    autocmd FileType python nnoremap <buffer> <LocalLeader>cdb Ofrom celery.contrib import rdb; rdb.set_trace()<Esc>
+    autocmd FileType python nnoremap <buffer> <LocalLeader>f :Format<CR>
+    autocmd FileType python nnoremap <buffer> <LocalLeader>m :CocCommand pyright.organizeimports<CR>
     autocmd FileType python set foldmethod=indent
     autocmd FileType python set foldlevelstart=99
     autocmd FileType python set foldlevel=99
@@ -726,8 +824,8 @@ augroup END
 " }}}
 
 " {{{1 Highlight
-" highlight Comment cterm=italic
-hi semshiParameter ctermfg=75  guifg=#5fafff cterm=italic gui=italic
-hi semshiFree      ctermfg=218 guifg=#ffafd7 cterm=italic gui=italic
-hi semshiParameterUnused ctermfg=117 guifg=#87d7ff cterm=underline,italic gui=underline
+highlight Comment cterm=italic
+" hi semshiParameter ctermfg=75  guifg=#5fafff cterm=italic gui=italic
+" hi semshiFree      ctermfg=218 guifg=#ffafd7 cterm=italic gui=italic
+" hi semshiParameterUnused ctermfg=117 guifg=#87d7ff cterm=underline,italic gui=underline
 " }}}

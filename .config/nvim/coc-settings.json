@@ -1,6 +1,6 @@
 {
     "codeLens.enable": true,
-    "diagnostic.enable": true,
+    "diagnostic.enable": false,
     "diagnostic.level": "error",
     "diagnostic.virtualText": true,
     "diagnostic.virtualTextCurrentLineOnly": true,
