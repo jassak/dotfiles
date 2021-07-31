@@ -69,6 +69,7 @@ nnoremap <Silent> * *zz
 nnoremap <Silent> N Nzz
 nnoremap <Silent> g* g*zz
 nnoremap <Silent> n nzz
+nnoremap <Silent> J mzJ`z
 nnoremap <Silent> ]] ]]zz
 nnoremap <Silent> [[ [[zz
 nnoremap <Silent> [] []zz
@@ -77,19 +78,27 @@ nnoremap <Silent> ]m ]mzz
 nnoremap <Silent> [m [mzz
 nnoremap <Silent> ]M ]Mzz
 nnoremap <Silent> [M [Mzz
+" Move text
+vnoremap <c-j> :m '>+1<CR>gv=gv
+vnoremap <c-k> :m '<-2<CR>gv=gv
+vnoremap <c-h> <gv
+vnoremap <c-l> >gv
+inoremap <c-j> <esc>:m .+1<CR>==li
+inoremap <c-k> <esc>:m .-2<CR>==li
+nnoremap <c-j> :m .+1<CR>==
+nnoremap <c-k> :m .-2<CR>==
+nnoremap <c-h> <<
+nnoremap <c-l> >>
+
 " nnoremap <CR> @@
 nnoremap <BS> <C-^>
 nnoremap H ^
 nnoremap L $
-vnoremap H ^
-vnoremap L $
 nnoremap Y y$
 vnoremap <Down> <Nop>
 vnoremap <Left> <Nop>
 vnoremap <Right> <Nop>
 vnoremap <Up> <Nop>
-xnoremap <  <gv
-xnoremap >  >gv
 xnoremap <F5> y:Dash <C-r>"<CR>
 nnoremap <F5> :Dash<CR>
 nnoremap \\ :nohlsearch<CR>
@@ -686,6 +695,7 @@ augroup filetype_py
     autocmd FileType python nnoremap <buffer> <LocalLeader>i :w<CR>:execute "split term://ipython -i -m " .PythonFilenameToModule()<CR>i
     autocmd FileType python nnoremap <buffer> <LocalLeader>s :w<CR>:execute "split term://python -i -m " . PythonFilenameToModule()<CR>i
     autocmd FileType python nnoremap <buffer> <LocalLeader>ta :w<CR>:split term://pytest %<CR>i
+    autocmd FileType python xnoremap <buffer> <LocalLeader>tt y:w<CR>:split term://pytest -v %::"<CR>i
     autocmd FileType python nnoremap <buffer> <LocalLeader>td :w<CR>:split term://pytest --lf --pdb %<CR>i
     autocmd FileType python nnoremap <buffer> <LocalLeader>tx :w<CR>:split term://pytest -x %<CR>i
     autocmd FileType python nnoremap <buffer> <LocalLeader>tt :w<CR>:split term://pytest --lf %<CR>i
