@@ -137,7 +137,7 @@ font:
     style: Bold Italic
 
   # Point size
-  size: 19.0
+  size: 18.0
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
@@ -172,11 +172,11 @@ font:
 #draw_bold_text_with_bright_colors: false
 
 # Colors (Tomorrow Night Bright)
-#colors:
+colors:
   # Default colors
-  #primary:
-  #  background: '#000000'
-  #  foreground: '#eaeaea'
+  primary:
+    background: '0x1a1b26'
+    foreground: '0xc0caf5'
 
     # Bright and dim foreground colors
     #
@@ -190,9 +190,9 @@ font:
   #
   # Colors which should be used to draw the terminal cursor. If these are unset,
   # the cursor color will be the inverse of the cell color.
-  #cursor:
-  #  text: '#000000'
-  #  cursor: '#ffffff'
+  cursor:
+    text: '#000000'
+    cursor: '#ba6b66'
 
   # Selection colors
   #
@@ -204,26 +204,26 @@ font:
   #  background: '#404040'
 
   # Normal colors
-  #normal:
-  #  black:   '#000000'
-  #  red:     '#d54e53'
-  #  green:   '#b9ca4a'
-  #  yellow:  '#e6c547'
-  #  blue:    '#7aa6da'
-  #  magenta: '#c397d8'
-  #  cyan:    '#70c0ba'
-  #  white:   '#eaeaea'
+  normal:
+    black:   '0x15161E'
+    red:     '0xf7768e'
+    green:   '0x9ece6a'
+    yellow:  '0xe0af68'
+    blue:    '0x7aa2f7'
+    magenta: '0xbb9af7'
+    cyan:    '0x7dcfff'
+    white:   '0xa9b1d6'
 
   # Bright colors
-  #bright:
-  #  black:   '#666666'
-  #  red:     '#ff3334'
-  #  green:   '#9ec400'
-  #  yellow:  '#e7c547'
-  #  blue:    '#7aa6da'
-  #  magenta: '#b77ee0'
-  #  cyan:    '#54ced6'
-  #  white:   '#ffffff'
+  bright:
+    black:   '0x414868'
+    red:     '0xf7768e'
+    green:   '0x9ece6a'
+    yellow:  '0xe0af68'
+    blue:    '0x7aa2f7'
+    magenta: '0xbb9af7'
+    cyan:    '0x7dcfff'
+    white:   '0xc0caf5'
 
   # Dim colors
   #
@@ -247,7 +247,9 @@ font:
   # Example:
   #   `- { index: 16, color: '#ff00ff' }`
   #
-  #indexed_colors: []
+  indexed_colors:
+    - { index: 16, color: '0xff9e64' }
+    - { index: 17, color: '0xdb4b4b' }
 
 # Visual Bell
 #
@@ -504,7 +506,7 @@ font:
 key_bindings:
   # (Windows, Linux, and BSD only)
   - { key: V,        mods: Control|Shift, action: Paste            }
-  #- { key: C,        mods: Control|Shift, action: Copy             }
+  - { key: C,        mods: Control|Shift, action: Copy             }
   #- { key: Insert,   mods: Shift,         action: PasteSelection   }
   #- { key: Key0,     mods: Control,       action: ResetFontSize    }
   #- { key: Equals,   mods: Control,       action: IncreaseFontSize }
@@ -639,20 +641,26 @@ key_bindings:
   - { key: Key8,      mods: Command,       chars: "\x1b8"                       }
   - { key: Key9,      mods: Command,       chars: "\x1b9"                       }
   - { key: Key0,      mods: Command,       chars: "\x1b0"                       }
-  - { key: Grave,     mods: Command,       chars: "\x1b`"                       } # Alt + `
-  - { key: Grave,     mods: Command|Shift, chars: "\x1b~"                       } # Alt + ~
-  - { key: Period,    mods: Command,       chars: "\x1b."                       } # Alt + .
-  - { key: Key8,      mods: Command|Shift, chars: "\x1b*"                       } # Alt + *
-  - { key: Key3,      mods: Command|Shift, chars: "\x1b#"                       } # Alt + #
-  - { key: Period,    mods: Command|Shift, chars: "\x1b>"                       } # Alt + >
-  - { key: Comma,     mods: Command|Shift, chars: "\x1b<"                       } # Alt + <
-  - { key: Minus,     mods: Command|Shift, chars: "\x1b_"                       } # Alt + _
-  - { key: Key5,      mods: Command|Shift, chars: "\x1b%"                       } # Alt + %
-  - { key: Key6,      mods: Command|Shift, chars: "\x1b^"                       } # Alt + ^
-  - { key: Backslash, mods: Command,       chars: "\x1b\\"                      } # Alt + \
-  - { key: Slash,     mods: Command,       chars: "\x1b/"                       } # Alt + /
-  - { key: Backslash, mods: Command|Shift, chars: "\x1b|"                       } # Alt + |
-  - { key: Back,      mods: Command,       chars: "\x1b\x7f"                    } # Alt + BS
+  - { key: Grave,     mods: Command,       chars: "\x1b`"                       } # Meta + `
+  - { key: Grave,     mods: Command|Shift, chars: "\x1b~"                       } # Meta + ~
+  - { key: Period,    mods: Command,       chars: "\x1b."                       } # Meta + .
+  - { key: Key8,      mods: Command|Shift, chars: "\x1b*"                       } # Meta + *
+  - { key: Key3,      mods: Command|Shift, chars: "\x1b#"                       } # Meta + #
+  - { key: Period,    mods: Command|Shift, chars: "\x1b>"                       } # Meta + >
+  - { key: Comma,     mods: Command|Shift, chars: "\x1b<"                       } # Meta + <
+  - { key: Minus,     mods: Command|Shift, chars: "\x1b_"                       } # Meta + _
+  - { key: Key5,      mods: Command|Shift, chars: "\x1b%"                       } # Meta + %
+  - { key: Key6,      mods: Command|Shift, chars: "\x1b^"                       } # Meta + ^
+  - { key: Minus,     mods: Command,       chars: "\x1b-"                       } # Meta + -
+  - { key: Minus,     mods: Command|Shift, chars: "\x1b_"                       } # Meta + _
+  - { key: Backslash, mods: Command,       chars: "\x1b\\"                      } # Meta + \
+  - { key: Slash,     mods: Command,       chars: "\x1b/"                       } # Meta + /
+  - { key: Backslash, mods: Command|Shift, chars: "\x1b|"                       } # Meta + |
+  - { key: Back,      mods: Command,       chars: "\x1b\x7f"                    } # Meta + BS
+
+# make c-enter and s-enter available (see https://stackoverflow.com/questions/16359878/how-to-map-shift-enter)
+  - { key: Return,   mods: Shift,   chars: "\x1b[13;2u" }
+  - { key: Return,   mods: Control, chars: "\x1b[13;5u" }
 
 #debug:
   # Display the time it takes to redraw each frame.
@@ -674,4 +682,3 @@ key_bindings:
 
   # Print all received window events.
   #print_events: false
-
