@@ -39,6 +39,11 @@ vim.api.nvim_set_keymap('n', '<M-H>', [[<c-w>H]], {noremap = true})
 vim.api.nvim_set_keymap('n', '<M-J>', [[<c-w>J]], {noremap = true})
 vim.api.nvim_set_keymap('n', '<M-K>', [[<c-w>K]], {noremap = true})
 vim.api.nvim_set_keymap('n', '<M-L>', [[<c-w>L]], {noremap = true})
+
+-- Change tabs
+vim.api.nvim_set_keymap('n', 'tt', 'gt', {noremap = true})
+vim.api.nvim_set_keymap('n', 'TT', 'gT', {noremap = true})
+
 -- No Q
 vim.api.nvim_set_keymap('n', 'Q', [[gq]], {noremap = true})
 

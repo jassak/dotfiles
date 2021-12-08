@@ -23,6 +23,9 @@ augroup filetype_ledger
     autocmd FileType ledger nnoremap <buffer> <localleader>do RHealth:Doctor<ESC>
     autocmd FileType ledger noremap { ?^\d<CR>
     autocmd FileType ledger noremap } /^\d<CR>
-    autocmd FileType ledger inoremap <silent> <Tab> <C-r>=ledger#autocomplete_and_align()<CR>
-    autocmd FileType ledger vnoremap <silent> <Tab> :LedgerAlign<CR>
+    autocmd FileType ledger xnoremap <silent> <Tab> :LedgerAlign<CR>
+    autocmd FileType ledger nnoremap <buffer> <localleader>gp o; :PERSONAL:<ESC>
+    autocmd FileType ledger nnoremap <buffer> <localleader>gj o; :JOINT:<ESC>
+    autocmd FileType ledger nnoremap <buffer> <localleader>gs o; :SG:<ESC>
 ]]
+-- autocmd FileType ledger inoremap <silent> <Tab> <C-r>=ledger#autocomplete_and_align()<CR>

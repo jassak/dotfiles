@@ -45,6 +45,13 @@ require('packer').startup(function()
         'nvim-telescope/telescope.nvim',
         requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
     }
+    use {
+      "nvim-telescope/telescope-frecency.nvim",
+      config = function()
+        require"telescope".load_extension("frecency")
+      end,
+      requires = {"tami5/sqlite.lua"}
+    }
 
     -- UI
     use {'christianchiarulli/nvcode-color-schemes.vim', config = 'vim.g.nvcode_termcolors = 256'}
@@ -87,12 +94,6 @@ require('packer').startup(function()
     use 'gennaro-tedesco/nvim-jqx'
     use 'windwp/nvim-autopairs'
     use {"akinsho/nvim-toggleterm.lua"}
-    -- use {
-    --     'kristijanhusak/orgmode.nvim',
-    --     config = function()
-    --         require('orgmode').setup {org_agenda_files = {'~/Dropbox (Personal)/org/*'}}
-    --     end
-    -- }
     use {"rcarriga/vim-ultest", requires = {"vim-test/vim-test"}, run = ":UpdateRemotePlugins"}
     use 'ggandor/lightspeed.nvim'
     use 'mhartington/formatter.nvim'
@@ -101,6 +102,8 @@ require('packer').startup(function()
     use 'wellle/targets.vim'
     use 'tommcdo/vim-lion'
     use 'mbbill/undotree'
+    use 'simrat39/symbols-outline.nvim'
+    use 'nanotee/zoxide.vim'
 end)
 
 require('settings')
@@ -131,5 +134,7 @@ require('pluggins.neogit')
 require('pluggins.diffview')
 require('pluggins.vsnip')
 require('pluggins.undotree')
+require('pluggins.ledger')
+require('pluggins.frecency')
 
 require('autocommands')

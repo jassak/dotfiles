@@ -12,5 +12,9 @@
 --     set undofile
 -- endif
 -- ]]
+vim.cmd[[
+let g:undotree_WindowLayout=2
+let g:undotree_SplitWidth=40
+]]
 
 vim.api.nvim_set_keymap('n', '<F5>', '<cmd>UndotreeToggle<CR>', {noremap = true})
