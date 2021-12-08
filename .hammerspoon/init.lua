@@ -293,10 +293,10 @@ end
 
 ----------------------------------------------------------------------------------------------------
 -- Register Hammerspoon console
-hsconsole_keys = hsconsole_keys or {"alt", "Z"}
-if string.len(hsconsole_keys[2]) > 0 then
-    spoon.ModalMgr.supervisor:bind(hsconsole_keys[1], hsconsole_keys[2], "Toggle Hammerspoon Console", function() hs.toggleConsole() end)
-end
+-- hsconsole_keys = hsconsole_keys or {"alt", "Z"}
+-- if string.len(hsconsole_keys[2]) > 0 then
+--     spoon.ModalMgr.supervisor:bind(hsconsole_keys[1], hsconsole_keys[2], "Toggle Hammerspoon Console", function() hs.toggleConsole() end)
+-- end
 
 ----------------------------------------------------------------------------------------------------
 -- Finally we initialize ModalMgr supervisor
@@ -344,12 +344,22 @@ function open(name)
 end
 
 --- quick open applications
-hs.hotkey.bind({"alt ctrl"}, "A", open("Alacritty"))
-hs.hotkey.bind({"alt ctrl"}, "F", open("Firefox"))
-hs.hotkey.bind({"alt ctrl"}, "D", open("Dash"))
-hs.hotkey.bind({"alt ctrl"}, "J", open("Slack"))
-hs.hotkey.bind({"alt ctrl"}, "W", open("WhatsApp"))
-hs.hotkey.bind({"cmd"}, "E", open("Emacs"))
+-- hs.hotkey.bind({"alt ctrl"}, "A", open("Alacritty"))
+-- hs.hotkey.bind({"alt ctrl"}, "F", open("Firefox"))
+-- hs.hotkey.bind({"alt ctrl"}, "D", open("Dash"))
+-- hs.hotkey.bind({"alt ctrl"}, "J", open("Slack"))
+-- hs.hotkey.bind({"alt ctrl"}, "W", open("WhatsApp"))
+-- hs.hotkey.bind({"cmd"}, "E", open("Emacs"))
+
+-- Up/Down Emacs style
+local function keyCode(key, modifiers)
+   modifiers = modifiers or {}
+   return function()
+      hs.eventtap.keyStroke(modifiers, key, 0)
+   end
+end
+hs.hotkey.bind({"ctrl", "cmd"}, "N", keyCode("down"))
+hs.hotkey.bind({"ctrl", "cmd"}, "P", keyCode("up"))
 
 --------------------------------
 -- START VIM CONFIG
