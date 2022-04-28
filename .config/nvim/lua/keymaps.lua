@@ -21,12 +21,11 @@ vim.api.nvim_set_keymap('n', '<leader>P', '"+P', {noremap = true})
 vim.api.nvim_set_keymap('v', '<leader>p', '"+p', {noremap = true})
 vim.api.nvim_set_keymap('v', '<leader>P', '"+P', {noremap = true})
 
--- Source init.lua
-vim.api.nvim_set_keymap('n', '<leader><CR>', [[<cmd>source %<CR>]], {noremap = true})
-
 -- Save, quit etc
 vim.api.nvim_set_keymap('n', '<M-w>', [[<cmd>w<CR>]], {noremap = true})
 vim.api.nvim_set_keymap('n', '<M-q>', [[<cmd>q<CR>]], {noremap = true})
+-- TODO if bufname starts with term:// <M-q> should also be bd!
+vim.api.nvim_set_keymap('t', '<M-q>', [[<cmd>bd!<CR>]], {noremap = true})
 vim.api.nvim_set_keymap('n', '<M-x>', [[<cmd>x<CR>]], {noremap = true})
 
 -- Move between windows
@@ -39,10 +38,9 @@ vim.api.nvim_set_keymap('n', '<M-H>', [[<c-w>H]], {noremap = true})
 vim.api.nvim_set_keymap('n', '<M-J>', [[<c-w>J]], {noremap = true})
 vim.api.nvim_set_keymap('n', '<M-K>', [[<c-w>K]], {noremap = true})
 vim.api.nvim_set_keymap('n', '<M-L>', [[<c-w>L]], {noremap = true})
-
--- Change tabs
-vim.api.nvim_set_keymap('n', 'tt', 'gt', {noremap = true})
-vim.api.nvim_set_keymap('n', 'TT', 'gT', {noremap = true})
+-- Move between tabs
+vim.api.nvim_set_keymap('n', '<M-n>', [[gt]], {noremap = true})
+vim.api.nvim_set_keymap('n', '<M-p>', [[gT]], {noremap = true})
 
 -- No Q
 vim.api.nvim_set_keymap('n', 'Q', [[gq]], {noremap = true})
@@ -80,7 +78,7 @@ vim.api.nvim_set_keymap('x', '<M-d>', [[yg`]p]], {noremap = true})
 vim.api.nvim_set_keymap('x', 'p', [["_dP]], {noremap = true})
 
 -- Quickfix
-vim.api.nvim_set_keymap('n', '<M-f>', [[<cmd>copen<CR>]], {noremap = true})
+-- vim.api.nvim_set_keymap('n', '<M-f>', [[<cmd>copen<CR>]], {noremap = true})  XXX conflicts with nvim-tree toggle
 
 -- Enter normal mode in terminal
 vim.api.nvim_set_keymap('t', '<C-[>', [[<C-\><C-N>]], {noremap = true})
@@ -97,13 +95,5 @@ vim.api.nvim_set_keymap('n', '<leader>1', [[<cmd>lua require"functions".set_spel
 vim.api.nvim_set_keymap('n', '<leader>2', [[<cmd>lua require"functions".set_spelllang_el()<cr>]], {noremap = false, silent = false})
 vim.api.nvim_set_keymap('n', '<leader>3', [[<cmd>lua require"functions".set_spelllang_fr()<cr>]], {noremap = false, silent = false})
 
--- Python specific TODO move to autocomands
--- python breakpoint
-vim.api.nvim_set_keymap('n', '<localleader>b', [[Obreakpoint()<esc>^]], {noremap = false})
--- ipython
--- vim.api.nvim_set_keymap('n', '<localleader>i', [[<cmd>lua ipython_toggle()<CR>]], {noremap = true, silent = false})
-vim.api.nvim_set_keymap('n', '<localleader>i', [[:split term://ipython -i %<CR>i]], {noremap = true, silent = false})
-vim.api.nvim_set_keymap('n', '<localleader>r', [[:split term://python %<CR>i]], {noremap = true, silent = false})
--- pytest debug
--- vim.api.nvim_set_keymap('n', '<localleader>td', [[<cmd>lua pytest_toggle()<CR>]], {noremap = true, silent = false})
-vim.api.nvim_set_keymap('n', '<localleader>td', [[:tabnew term://pytest -x --lf --pdb %<CR>i]], {noremap = true, silent = false})
+-- Keep window layout on bd
+vim.api.nvim_set_keymap('n', '<leader>q', [[:e #<CR>:bd! #<CR>]], {noremap = true})

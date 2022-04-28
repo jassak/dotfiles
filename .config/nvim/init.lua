@@ -20,7 +20,9 @@ require('packer').startup(function()
     use 'folke/lsp-colors.nvim'
     use 'onsails/lspkind-nvim'
     use 'glepnir/lspsaga.nvim'
-    use {"ahmedkhalf/lsp-rooter.nvim", config = function() require("lsp-rooter").setup {} end}
+    use "ahmedkhalf/project.nvim"
+    use {"ray-x/lsp_signature.nvim"}
+    use 'j-hui/fidget.nvim'
 
     -- Treesitter
     use 'nvim-treesitter/nvim-treesitter'
@@ -29,6 +31,7 @@ require('packer').startup(function()
 
     -- File explorer
     use {'kyazdani42/nvim-tree.lua', requires = 'kyazdani42/nvim-web-devicons'}
+    -- use {"nvim-neo-tree/neo-tree.nvim", branch = "v1.x", requires = {"MunifTanjim/nui.nvim"}}
 
     -- TPope
     use 'tpope/vim-fugitive' -- Git commands in nvim
@@ -41,17 +44,13 @@ require('packer').startup(function()
     use 'tpope/vim-rsi' -- Readline/Emacs keybinding on insert mode
 
     -- Telescope
+    use {'nvim-telescope/telescope.nvim', requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}}
     use {
-        'nvim-telescope/telescope.nvim',
-        requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}
+        "nvim-telescope/telescope-frecency.nvim",
+        config = function() require"telescope".load_extension("frecency") end,
+        requires = {"tami5/sqlite.lua"}
     }
-    use {
-      "nvim-telescope/telescope-frecency.nvim",
-      config = function()
-        require"telescope".load_extension("frecency")
-      end,
-      requires = {"tami5/sqlite.lua"}
-    }
+    use {"LinArcX/telescope-env.nvim", config = function() require"telescope".load_extension("env") end}
 
     -- UI
     use {'christianchiarulli/nvcode-color-schemes.vim', config = 'vim.g.nvcode_termcolors = 256'}
@@ -59,6 +58,7 @@ require('packer').startup(function()
     use {'hoob3rt/lualine.nvim', requires = {'kyazdani42/nvim-web-devicons', opt = true}} -- Status line in lua
     use 'folke/tokyonight.nvim'
     use 'mhinz/vim-startify'
+    use {'m-demare/hlargs.nvim', requires = {'nvim-treesitter/nvim-treesitter'}}
 
     -- Git
     use {'lewis6991/gitsigns.nvim', requires = {'nvim-lua/plenary.nvim'}}
@@ -83,14 +83,12 @@ require('packer').startup(function()
     -- Programming Languages
     use 'euclidianAce/BetterLua.vim'
     use 'Vimjas/vim-python-pep8-indent'
+    use 'chrisbra/csv.vim'
 
     -- Various
     use 'szw/vim-maximizer' -- Maximize current window
     -- use 'glepnir/dashboard-nvim'
-    use {
-        "folke/which-key.nvim",
-        config = function() require("which-key").setup {triggers = "auto"} end
-    }
+    use {"folke/which-key.nvim", config = function() require("which-key").setup {triggers = "auto"} end}
     use 'gennaro-tedesco/nvim-jqx'
     use 'windwp/nvim-autopairs'
     use {"akinsho/nvim-toggleterm.lua"}
@@ -104,6 +102,19 @@ require('packer').startup(function()
     use 'mbbill/undotree'
     use 'simrat39/symbols-outline.nvim'
     use 'nanotee/zoxide.vim'
+    use {"SmiteshP/nvim-gps", requires = "nvim-treesitter/nvim-treesitter"}
+    use {'mg979/vim-visual-multi', branch = "master"}
+    use 'hoschi/yode-nvim' -- Focus on the important parts of the code
+    use 'dhruvasagar/vim-table-mode'
+    use {'michaelb/sniprun', run = 'bash ./install.sh'} -- Run lines/blocs of code
+    use 'nvim-treesitter/nvim-treesitter-refactor'
+    use {"AckslD/nvim-neoclip.lua", requires = {{'tami5/sqlite.lua', module = 'sqlite'}}} -- Clipboard manager
+    use 'luizribeiro/vim-cooklang'
+    use 'anuvyklack/pretty-fold.nvim'
+
+    -- orgmode
+    use 'nvim-orgmode/orgmode'
+    use "akinsho/org-bullets.nvim"
 end)
 
 require('settings')
@@ -113,11 +124,13 @@ require('keymaps')
 require('abbrevs')
 
 require('pluggins.lualine')
+require('pluggins.nvim_gps')
 require('pluggins.gitsigns')
 require('pluggins.telescope')
 require('pluggins.nvim_lsp')
 require('pluggins.lspsaga')
 require('pluggins.lspkind')
+require('pluggins.project')
 require('pluggins.nvim_treesitter')
 require('pluggins.nvim_tree')
 require('pluggins.toggleterm')
@@ -136,5 +149,16 @@ require('pluggins.vsnip')
 require('pluggins.undotree')
 require('pluggins.ledger')
 require('pluggins.frecency')
+require('pluggins.orgmode')
+require('pluggins.hlargs')
+require('pluggins.lsp_signature')
+require('pluggins.yode')
+require('pluggins.vim_table_mode')
+require('pluggins.nvim_treesitter_refactor')
+require('pluggins.nvim_treesitter_textobjects')
+require('pluggins.neoclip')
+-- require('pluggins.pretty_fold')
+require"fidget".setup {}
 
 require('autocommands')
+require('ui')

@@ -1,7 +1,7 @@
 -- General settings
 vim.g.python3_host_prog = '/Users/zazon/.virtualenvs/py3nvim/bin/python'
 vim.g.python_host_prog = '/Users/zazon/.virtualenvs/py2nvim/bin/python'
-vim.o.inccommand = 'nosplit' -- Incremental live completion
+vim.o.inccommand = 'split' -- Incremental live completion
 vim.o.redrawtime = 300
 vim.o.hlsearch = false -- Set highlight on search
 vim.wo.number = true -- Make line numbers default
@@ -20,7 +20,7 @@ vim.o.secure = true -- dissalows unsecure commands in local files
 vim.o.modeline = false -- disables scanning for ex: vi: vim:
 vim.o.conceallevel = 2 -- prettifies markdown
 vim.o.cmdheight = 1 -- Give more space for displaying messages
-vim.o.history = 1000 -- keep 500 lines of command line history
+vim.o.history = 10000 -- keep 10000 lines of command line history
 -- vim.o.formatoptions-=cro -- disable automatic comment leader insertion
 vim.o.foldenable = true -- enable folding
 vim.o.foldlevelstart = 100 -- most folds closed by default
@@ -32,7 +32,12 @@ vim.o.incsearch = true -- search as characters are entered
 vim.o.smartcase = true -- but make it case sensitive if an uppercase is entered
 vim.o.hlsearch = false -- no highlight search (check https://github.com/haya14busa/incsearch.vim)
 vim.o.laststatus = 2 -- show the status line at the bottom
--- set listchars=tab:▸\ ,eol:¬,extends:»,precedes:«,trail:•,nbsp:⎵
+vim.opt.listchars = { -- does not work for some reason
+  tab = '│·',
+  extends = '⟩',
+  precedes = '⟨',
+  trail = '·'
+}
 vim.o.showmode = false -- don't need since we have statusline
 vim.o.number = true -- show line numbers
 vim.o.relativenumber = true -- relative line numbers by default
@@ -56,15 +61,8 @@ vim.o.undolevels = 10000 -- huge undo because why not
 vim.o.updatetime = 100
 vim.o.wildmenu = true -- visual autocomplete for command menu
 vim.o.wrap = false
-
--- UI
--- colorscheme (order is important here)
 vim.o.termguicolors = true
-vim.g.onedark_terminal_italics = 2
-vim.cmd [[colorscheme tokyonight]]
-vim.g.tokyonight_style = "night"
-vim.g.tokyonight_italic_functions = true
-vim.g.tokyonight_sidebars = {"qf", "vista_kind", "terminal", "packer"}
+vim.o.langmap = 'ΑA,ΒB,ΨC,ΔD,ΕE,ΦF,ΓG,ΗH,ΙI,ΞJ,ΚK,ΛL,ΜM,ΝN,ΟO,ΠP,ΡR,ΣS,ΤT,ΘU,ΩV,ΣW,ΧX,ΥY,ΖZ,αa,βb,ψc,δd,εe,φf,γg,ηh,ιi,ξj,κk,λl,μm,νn,οo,πp,ρr,σs,τt,θu,ωv,ςw,χx,υy,ζz'
 
 -- Behaviour
 -- remove trailing whitespaces

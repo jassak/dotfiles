@@ -4,7 +4,7 @@ require('telescope').setup {
             'rg', '--color=never', '--no-heading', '--with-filename', '--line-number', '--column',
             '--smart-case'
         },
-        mappings = {i = {['<C-u>'] = false, ['<C-d>'] = false}}
+        mappings = {i = {['<C-u>'] = false, ['<C-d>'] = false}, i = {["<esc>"] = require('telescope.actions').close}}
     },
     -- pickers = {
     --     buffers = {
@@ -13,9 +13,9 @@ require('telescope').setup {
     -- }
 }
 
-vim.api.nvim_set_keymap('n', '<leader>t', [[<cmd>Telescope<CR>]], {noremap = true, silent = true})
+vim.api.nvim_set_keymap('n', '<leader>ff', [[<cmd>Telescope<CR>]], {noremap = true, silent = true})
 vim.api.nvim_set_keymap('n', '<leader><space>', [[<cmd>lua require('telescope.builtin').buffers()<CR>]], {noremap = true, silent = true})
-vim.api.nvim_set_keymap('n', '<leader>ff', [[<cmd>lua require('telescope.builtin').find_files()<CR>]], {noremap = true, silent = true})
+vim.api.nvim_set_keymap('n', '<leader><CR>', [[<cmd>lua require('telescope.builtin').find_files()<CR>]], {noremap = true, silent = true})
 vim.api.nvim_set_keymap('n', '<leader>fb', [[<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<CR>]], {noremap = true, silent = true})
 vim.api.nvim_set_keymap('n', '<leader>fh', [[<cmd>lua require('telescope.builtin').help_tags()<CR>]], {noremap = true, silent = true})
 vim.api.nvim_set_keymap('n', '<leader>fo', [[<cmd>lua require('telescope.builtin').oldfiles()<CR>]], {noremap = true, silent = true})
@@ -32,3 +32,4 @@ vim.api.nvim_set_keymap('n', '<leader>fa', [[<cmd>lua require('telescope.builtin
 vim.api.nvim_set_keymap('n', '<leader>gc', [[<cmd>lua require('telescope.builtin').git_commits()<CR>]], {noremap = true, silent = true})
 vim.api.nvim_set_keymap('n', '<leader>gf', [[<cmd>lua require('telescope.builtin').git_bcommits()<CR>]], {noremap = true, silent = true})
 vim.api.nvim_set_keymap('n', '<leader>gb', [[<cmd>lua require('telescope.builtin').git_branches()<CR>]], {noremap = true, silent = true})
+vim.api.nvim_set_keymap('n', '<leader>gg', [[<cmd>lua require('telescope.builtin').git_status()<CR>]], {noremap = true, silent = true})

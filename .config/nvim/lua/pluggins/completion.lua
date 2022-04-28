@@ -18,11 +18,11 @@ cmp.setup({
     },
     sources = cmp.config.sources({
         {name = 'vsnip'}, -- For vsnip users.
+        {name = 'buffer', keyword_length = 3},
         {name = 'nvim_lsp'},
         {name = 'nvim_lua'},
         {name = 'path'},
-        {name = 'buffer', keyword_length = 5},
-        {name = 'spell', keyword_length = 4},
+        {name = 'spell', keyword_length = 3},
         {name = 'calc'}
     }),
     experimental = {

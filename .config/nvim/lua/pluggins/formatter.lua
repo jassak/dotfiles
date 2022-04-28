@@ -36,15 +36,19 @@ require('formatter').setup({
         --       }
         --     end
         -- }
-        python = {function() return {exe = "black", args = {}, stdin = false} end}
+        python = {
+            function()
+                return {exe = "black", args = { '-' }, stdin = true}
+            end
+        }
     }
 })
-vim.api.nvim_exec([[
-augroup FormatAutogroup
-  autocmd!
-  autocmd BufWritePost *.py FormatWrite
-augroup END
-]], true)
+-- vim.api.nvim_exec([[
+-- augroup FormatAutogroup
+--   autocmd!
+--   autocmd BufWritePost *.py FormatWrite
+-- augroup END
+-- ]], true)
 
 -- XXX leader f conflicts with telescope commands
--- vim.api.nvim_set_keymap('n', '<leader>f', [[<cmd>Format<CR>]], {noremap = true})
+vim.api.nvim_set_keymap('n', '<localleader>f', [[<cmd>Format<CR>]], {noremap = true})
