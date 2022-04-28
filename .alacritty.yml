@@ -137,20 +137,20 @@ font:
     style: Bold Italic
 
   # Point size
-  size: 16.0
+  size: 17.0
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
   offset:
    x: 0
-   y: 10
+   y: 2
 
   # Glyph offset determines the locations of the glyphs within their cells with
   # the default being at the bottom. Increasing `x` moves the glyph to the right,
   # increasing `y` moves the glyph upwards.
   glyph_offset:
    x: 0
-   y: 5
+   y: 1
 
   # Thin stroke font rendering (macOS only)
   #
@@ -504,8 +504,6 @@ colors:
 # If the same trigger is assigned to multiple actions, all of them are executed
 # at once.
 key_bindings:
-  - { key: N, mods: Command, action: SpawnNewInstance }  # New window
-
   # (Windows, Linux, and BSD only)
   - { key: V,        mods: Control|Shift, action: Paste            }
   - { key: C,        mods: Control|Shift, action: Copy             }
@@ -663,6 +661,9 @@ key_bindings:
 # make c-enter and s-enter available (see https://stackoverflow.com/questions/16359878/how-to-map-shift-enter)
   - { key: Return,   mods: Shift,   chars: "\x1b[13;2u" }
   - { key: Return,   mods: Control, chars: "\x1b[13;5u" }
+
+# control-space https://github.com/alacritty/alacritty/issues/1703#issuecomment-433476493
+  - { key: Space, mods: Control, chars: "\x00" }
 
 #debug:
   # Display the time it takes to redraw each frame.
