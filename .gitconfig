@@ -1,0 +1,98 @@
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[user]
+	name = Jason Sakellariou
+	email = js.sakel@gmail.com
+[credential]
+	helper = store
+[alias]
+    amend = commit --amend --no-edit
+    co = checkout
+    d = difftool
+    diff-vs-master = !git diff -M "$@" $(git merge-base HEAD origin/master) -- .
+    divergence = !git log HEAD origin/master --not $(git merge-base HEAD --all origin/master)^ --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset%n' --abbrev-commit
+    edit = commit --amend --only
+    ff = merge --ff-only
+    graph = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset%n' --abbrev-commit
+    history = log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+    last = log -1 HEAD
+    show-base = !git show $(git merge-base HEAD origin/master)
+    show-files = !git show $1 --pretty="" --name-only
+    st = status
+    stash-dammit = stash --include-untracked
+    unstage = reset HEAD --
+
+    # Fancy logging.
+    #   h = head
+    #   hp = head with patch
+    #   r = recent commits, only current branch
+    #   ra = recent commits, all reachable refs
+    #   l = all commits, only current branch
+    #   la = all commits, all reachable refs
+    #   b = all branches, sorted by last commit date
+    head = !git r -1
+    h = !git head
+    hp = "!. ~/.githelpers && show_git_head"
+    r = !GIT_NO_PAGER=1 git l -30
+    ra = !git r --all
+    l = "!. ~/.githelpers && pretty_git_log"
+    la = !git l --all
+    ; b = "!. ~/.githelpers && pretty_git_branch"
+    b = "!. ~/.githelpers && pretty_git_branch_sorted"
+[core]
+	editor = nvim
+	pager = delta
+	compression = 0
+[gc]
+    reflogExpire = 200  # default 90 days
+    reflogExpireUnreachable = 90  # default 30 days
+[delta]
+    plus-color = "#012800"
+    minus-color = "#340001"
+    syntax-theme = base16
+    line-numbers = true
+    side-by-side = false
+[interactive]
+    diffFilter = delta --color-only
+[diff]
+	tool = nvimdiff
+[difftool]
+	prompt = true
+[merge]
+    tool = nvimdiff
+	conflictStyle = diff3
+[mergetool]
+    prompt = false
+    keepBackup = false
+[mergetool "vimdiff"]
+    layout = "LOCAL,REMOTE / MERGED"
+[color]
+	ui = true
+[color "diff-highlight"]
+	oldNormal = red bold
+	oldHighlight = red bold 52
+	newNormal = green bold
+	newHighlight = green bold 22
+[color "diff"]
+	meta = 11
+	frag = magenta bold
+	commit = yellow bold
+	old = red bold
+	new = green bold
+	whitespace = red reverse
+[http]
+	postBuffer = 500M
+	maxRequestBuffer = 500M
+[pack]
+	windowMemory = 3000m
+	packSizeLimit = 3000m
+	threads = 1
+[init]
+	defaultBranch = main
+[github]
+	user = jassak
+[diff "nodiff"]
+	command = /usr/bin/true
