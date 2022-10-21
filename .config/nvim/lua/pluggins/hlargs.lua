@@ -1,10 +1,17 @@
 require('hlargs').setup {
-  color = "#ef9062",
-  excluded_filetypes = {},
-  paint_arg_declarations = true,
-  paint_arg_usages = true,
-  performance = {
-    parse_delay = 1,
-    max_iterations = 400
-  }
+  -- color = '#fac53c',
+  color = '#fab4b9',
+  highlight = {},
+  extras = {
+    named_parameters = false,
+  },
+  excluded_argnames = {
+    declarations = {
+      python = { 'self', 'cls' },
+    },
+    usages = {
+      python = { 'self', 'cls' },
+      lua = { 'self' }
+    }
+  },
 }
