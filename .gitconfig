@@ -10,10 +10,12 @@
 	helper = store
 [alias]
     amend = commit --amend --no-edit
+    archeology = blame -w -n -M -C -C -C
     co = checkout
     d = difftool
     diff-vs-master = !git diff -M "$@" $(git merge-base HEAD origin/master) -- .
     divergence = !git log HEAD origin/master --not $(git merge-base HEAD --all origin/master)^ --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset%n' --abbrev-commit
+    div2 = !git log HEAD origin/master --not $(git log $(git merge-base HEAD --all origin/master) -n 1 --no-merges --pretty=%h) --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset%n' --abbrev-commit
     edit = commit --amend --only
     ff = merge --ff-only
     graph = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset%n' --abbrev-commit
@@ -22,7 +24,7 @@
     show-base = !git show $(git merge-base HEAD origin/master)
     show-files = !git show $1 --pretty="" --name-only
     st = status
-    stash-dammit = stash --include-untracked
+    stash-untracked = stash --include-untracked
     unstage = reset HEAD --
 
     # Fancy logging.
