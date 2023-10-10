@@ -8,6 +8,18 @@ augroup filetype_py
     autocmd FileType python nnoremap <localleader>bi O__import__("IPython").embed(colors="neutral")<esc>^
     autocmd FileType python nnoremap <localleader>i :split term://ipython -i %<CR>i
     autocmd FileType python nnoremap <localleader>r :split term://python3 -i %<CR>i
+    autocmd FileType python nnoremap <localleader>s :!isort % --profile black --force-single-line-imports<CR>
+    autocmd FileType python nnoremap <buffer> <localleader>p :w<CR>:split term://python -m cProfile --sort=cumtime %<CR>
+augroup END
+]]
+-- TODO below is not working
+-- autocmd FileType python nnoremap <localleader>bc O__import__("celery.contrib.rdb").set_trace()<esc>^
+
+-- Lua
+vim.cmd [[
+augroup filetype_lua
+    autocmd!
+    autocmd FileType lua nnoremap <localleader>i :split term://lua -i %<CR>i
 augroup END
 ]]
 
@@ -50,3 +62,10 @@ if has("nvim")
   au FileType fzf tunmap <buffer> <Esc>
 endif
 ]]
+
+-- https://vi.stackexchange.com/questions/39200/wrapping-comment-in-visual-mode-not-working-with-gq
+vim.api.nvim_create_autocmd('LspAttach', {
+   callback = function(args)
+     vim.bo[args.buf].formatexpr = nil
+   end,
+ })

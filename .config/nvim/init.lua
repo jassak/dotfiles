@@ -32,9 +32,25 @@ require('packer').startup(function()
     -- use 'ziontee113/syntax-tree-surfer'
 
     -- File explorer
-    use 'justinmk/vim-dirvish'
-    use 'kristijanhusak/vim-dirvish-git'
-    use 'roginfarrer/vim-dirvish-dovish'
+    -- use 'justinmk/vim-dirvish'
+    -- use 'kristijanhusak/vim-dirvish-git'
+    -- use 'roginfarrer/vim-dirvish-dovish'
+    -- use {
+    --     "X3eRo0/dired.nvim",
+    --     requires = "MunifTanjim/nui.nvim",
+    --     config = function()
+    --         require("dired").setup {
+    --             path_separator = "/",
+    --             show_banner = false,
+    --             show_hidden = true,
+    --             show_dot_dirs = true,
+    --             show_colors = true,
+    --         }
+    --     end
+    -- }
+
+    -- myplugin
+    use '~/projects/nadir'
 
     -- TPope
     use 'tpope/vim-fugitive' -- Git commands in nvim
@@ -45,6 +61,7 @@ require('packer').startup(function()
     use 'tpope/vim-unimpaired' -- Pairs of bracket mappings
     use 'tpope/vim-rsi' -- Readline/Emacs keybinding on insert mode
     use 'tpope/vim-eunuch' -- Helpers for UNIX
+    use 'tpope/vim-vinegar'
 
     -- Telescope
     use {'nvim-telescope/telescope.nvim', requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}}
@@ -62,6 +79,7 @@ require('packer').startup(function()
     use {'hoob3rt/lualine.nvim', requires = {'kyazdani42/nvim-web-devicons', opt = true}} -- Status line in lua
     use 'folke/tokyonight.nvim'
     use 'mhinz/vim-startify'
+    use {'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async'}
 
     -- Git
     use {'lewis6991/gitsigns.nvim', requires = {'nvim-lua/plenary.nvim'}}
@@ -87,6 +105,10 @@ require('packer').startup(function()
     use 'euclidianAce/BetterLua.vim'
     use 'chrisbra/csv.vim'
     use 'aklt/plantuml-syntax'
+    -- use({
+    --   'python-rope/ropevim',
+    --   ft = "python"
+    -- })
 
     -- Various
     use 'szw/vim-maximizer' -- Maximize current window
@@ -101,14 +123,18 @@ require('packer').startup(function()
     use 'wellle/targets.vim'
     use 'mbbill/undotree'
     use {'mg979/vim-visual-multi', branch = "master"}
-    -- use 'dhruvasagar/vim-table-mode'
     -- use 'anuvyklack/pretty-fold.nvim'
     use 'rizzatti/dash.vim'
     -- use 'davidgranstrom/nvim-markdown-preview'
+    use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", setup = function() vim.g.mkdp_filetypes = { "markdown" } end, ft = { "markdown" }, })
     use {'kkoomen/vim-doge', run = ':call doge#install()'}
     use 'scrooloose/vim-slumlord'
+    use 'godlygeek/tabular'
+    use 'dhruvasagar/vim-table-mode'
+    use 'stevearc/aerial.nvim'
 end)
 
+require('globals')
 require('settings')
 require('tabline')
 require('functions')
@@ -127,6 +153,7 @@ require('pluggins.hlargs')
 -- UI
 require('pluggins.lualine')
 require('pluggins.startify')
+require('pluggins.nvim_ufo')
 
 -- git
 require('pluggins.gitsigns')
@@ -158,6 +185,8 @@ require('pluggins.ledger')
 require('pluggins.dash')
 require('pluggins.formatter')
 require('pluggins.doge')
+require('pluggins.vim_table_mode')
+require('pluggins.aerial')
 
 require('autocommands')
 require('ui')

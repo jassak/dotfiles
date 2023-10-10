@@ -1,7 +1,7 @@
 -- General settings
 vim.g.python3_host_prog = '/Users/zazon/.virtualenvs/py3nvim/bin/python'
 vim.g.python_host_prog = '/Users/zazon/.virtualenvs/py2nvim/bin/python'
-vim.o.inccommand = 'split' -- Incremental live completion
+vim.o.inccommand = '' -- Incremental live completion
 vim.o.redrawtime = 300
 vim.o.hlsearch = false -- Set highlight on search
 vim.wo.number = true -- Make line numbers default
@@ -40,7 +40,7 @@ vim.opt.listchars = { -- does not work for some reason
 }
 vim.o.showmode = false -- don't need since we have statusline
 vim.o.number = true -- show line numbers
-vim.o.relativenumber = false -- no relative line numbers by default
+vim.o.relativenumber = true -- no relative line numbers by default
 vim.o.scrolloff = 8 -- keep action in middle of screen
 -- vim.o.shortmess+=c -- don't pass messages to |ins-completion-menu|.
 vim.o.showcmd = true -- show command in bottom bar
