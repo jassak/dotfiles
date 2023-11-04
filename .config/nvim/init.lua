@@ -21,7 +21,7 @@ require('packer').startup(function()
     -- LSP
     use 'neovim/nvim-lspconfig' -- Collection of configurations for built-in LSP client
     use {"ray-x/lsp_signature.nvim"}
-    use 'j-hui/fidget.nvim'
+    -- use 'j-hui/fidget.nvim'
 
     -- Treesitter
     use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'}
@@ -30,27 +30,6 @@ require('packer').startup(function()
     use {'m-demare/hlargs.nvim', requires = {'nvim-treesitter/nvim-treesitter'}}
     use 'nvim-treesitter/nvim-treesitter-refactor'
     -- use 'ziontee113/syntax-tree-surfer'
-
-    -- File explorer
-    -- use 'justinmk/vim-dirvish'
-    -- use 'kristijanhusak/vim-dirvish-git'
-    -- use 'roginfarrer/vim-dirvish-dovish'
-    -- use {
-    --     "X3eRo0/dired.nvim",
-    --     requires = "MunifTanjim/nui.nvim",
-    --     config = function()
-    --         require("dired").setup {
-    --             path_separator = "/",
-    --             show_banner = false,
-    --             show_hidden = true,
-    --             show_dot_dirs = true,
-    --             show_colors = true,
-    --         }
-    --     end
-    -- }
-
-    -- myplugin
-    use '~/projects/nadir'
 
     -- TPope
     use 'tpope/vim-fugitive' -- Git commands in nvim
@@ -105,10 +84,6 @@ require('packer').startup(function()
     use 'euclidianAce/BetterLua.vim'
     use 'chrisbra/csv.vim'
     use 'aklt/plantuml-syntax'
-    -- use({
-    --   'python-rope/ropevim',
-    --   ft = "python"
-    -- })
 
     -- Various
     use 'szw/vim-maximizer' -- Maximize current window
@@ -125,7 +100,6 @@ require('packer').startup(function()
     use {'mg979/vim-visual-multi', branch = "master"}
     -- use 'anuvyklack/pretty-fold.nvim'
     use 'rizzatti/dash.vim'
-    -- use 'davidgranstrom/nvim-markdown-preview'
     use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", setup = function() vim.g.mkdp_filetypes = { "markdown" } end, ft = { "markdown" }, })
     use {'kkoomen/vim-doge', run = ':call doge#install()'}
     use 'scrooloose/vim-slumlord'
@@ -134,7 +108,6 @@ require('packer').startup(function()
     use 'stevearc/aerial.nvim'
 end)
 
-require('globals')
 require('settings')
 require('tabline')
 require('functions')
@@ -144,7 +117,7 @@ require('abbrevs')
 -- LSP
 require('pluggins.nvim_lsp')
 require('pluggins.lsp_signature')
-require"fidget".setup {}
+--require"fidget".setup {}
 
 -- TS
 require('pluggins.nvim_treesitter')
