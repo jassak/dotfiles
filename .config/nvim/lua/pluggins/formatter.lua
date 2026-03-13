@@ -11,7 +11,7 @@ require('formatter').setup({
                 }
             end
         },
-        python = {function() return {exe = "black", args = {'--line-length', 88, '-'}, stdin = true} end},
+        python = {function() return {exe = "black", args = {'--line-length', 120, '-'}, stdin = true} end},
         json = {function() return {exe = "jq", args = {".", "--indent", 4}, stdin = true} end}
     }
 })

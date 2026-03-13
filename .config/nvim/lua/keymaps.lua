@@ -106,9 +106,13 @@ vim.cmd([[nnoremap <expr> <silent> 0 col('.') == match(getline('.'),'\S')+1 ? '0
 
 -- Fugitive status
 vim.api.nvim_set_keymap('n', '<M-g>', [[:tab G<CR>]], {noremap = true})
+vim.api.nvim_set_keymap('n', '<leader>gh', [[:0Gclog<CR>]], {noremap = true})
 
 -- lua stuff
 vim.api.nvim_set_keymap('n', '<leader>l', [[:lua ]], {noremap = true})
 
 -- quick search
 vim.api.nvim_set_keymap('n', '<C-s>', [[:%s/]], {noremap = true})
+
+-- make
+vim.api.nvim_set_keymap('n', '<leader>m', [[<cmd>make<CR>]], {noremap = true})

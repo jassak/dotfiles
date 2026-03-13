@@ -1,6 +1,6 @@
 -- General settings
-vim.g.python3_host_prog = '/Users/zazon/.virtualenvs/py3nvim/bin/python'
-vim.g.python_host_prog = '/Users/zazon/.virtualenvs/py2nvim/bin/python'
+-- vim.g.python3_host_prog = '/Users/zazon/.virtualenvs/py3nvim/bin/python'
+-- vim.g.python_host_prog = '/Users/zazon/.virtualenvs/py2nvim/bin/python'
 vim.o.inccommand = '' -- Incremental live completion
 vim.o.redrawtime = 300
 vim.o.hlsearch = false -- Set highlight on search
@@ -53,10 +53,12 @@ vim.o.shiftwidth = 4
 vim.o.expandtab = true -- 4 spaces instead of tabs
 vim.o.ttyfast = true -- optimize for fast terminal connections
 vim.o.timeoutlen = 500 -- short waiting time for comined key maps
-vim.o.swapfile = false
-vim.o.backup = false
-vim.o.undodir = vim.loop.os_homedir() .. '/.vimdid' -- permanent undo
+vim.o.backup = true
+vim.o.backupdir = vim.loop.os_homedir() .. '/.vimtmp' -- permanent backup
+vim.o.swapfile = true
+vim.o.directory = vim.loop.os_homedir() .. '/.vimtmp' -- permanent swap
 vim.o.undofile = true
+vim.o.undodir = vim.loop.os_homedir() .. '/.vimdid' -- permanent undo
 vim.o.undolevels = 10000 -- huge undo because why not
 vim.o.updatetime = 100
 vim.o.wildmenu = true -- visual autocomplete for command menu

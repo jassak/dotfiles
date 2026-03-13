@@ -42,6 +42,9 @@ require('packer').startup(function()
     use 'tpope/vim-eunuch' -- Helpers for UNIX
     use 'tpope/vim-vinegar'
 
+    -- File explorer
+    use "stevearc/oil.nvim"
+
     -- Telescope
     use {'nvim-telescope/telescope.nvim', requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}}}
     use {"LinArcX/telescope-env.nvim", config = function() require"telescope".load_extension("env") end}
@@ -59,6 +62,7 @@ require('packer').startup(function()
     use 'folke/tokyonight.nvim'
     use 'mhinz/vim-startify'
     use {'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async'}
+    use { "catppuccin/nvim", as = "catppuccin" }
 
     -- Git
     use {'lewis6991/gitsigns.nvim', requires = {'nvim-lua/plenary.nvim'}}
@@ -87,7 +91,9 @@ require('packer').startup(function()
 
     -- Various
     use 'szw/vim-maximizer' -- Maximize current window
-    use {"folke/which-key.nvim", config = function() require("which-key").setup {triggers = "auto"} end}
+    use {"folke/which-key.nvim", config = function() require("which-key").setup {} end}
+    use 'echasnovski/mini.nvim'
+    use 'nvim-tree/nvim-web-devicons'
     use 'windwp/nvim-autopairs'
     use {"akinsho/nvim-toggleterm.lua"}
     use "vim-test/vim-test"
@@ -104,8 +110,13 @@ require('packer').startup(function()
     use {'kkoomen/vim-doge', run = ':call doge#install()'}
     use 'scrooloose/vim-slumlord'
     use 'godlygeek/tabular'
+    use 'preservim/vim-markdown'
     use 'dhruvasagar/vim-table-mode'
     use 'stevearc/aerial.nvim'
+    use 'voldikss/vim-mma' -- mathematica syntax
+    use 'github/copilot.vim'
+    use 'lervag/vimtex'
+    use 'vimwiki/vimwiki'
 end)
 
 require('settings')
@@ -160,6 +171,11 @@ require('pluggins.formatter')
 require('pluggins.doge')
 require('pluggins.vim_table_mode')
 require('pluggins.aerial')
+require('pluggins.copilot')
+require('pluggins.oil')
+require('pluggins.vimwiki')
+vim.g.vimtex_version_check = 0  -- https://github.com/lervag/vimtex/issues/2944#issuecomment-2081519460
+
 
 require('autocommands')
 require('ui')
