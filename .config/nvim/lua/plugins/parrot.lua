@@ -67,9 +67,9 @@ return {
             return payload
           end,
           models = {
-            "claude-haiku-4-5-20251001   | $1/$5",
-            "claude-sonnet-4-6           | $3/$15",
-            "claude-opus-4-6             | $5/$25",
+            "claude-haiku-4-5-20251001",
+            "claude-sonnet-4-6",
+            "claude-opus-4-6",
           },
           params = {
             chat    = { max_tokens = 4096 },
@@ -190,9 +190,10 @@ return {
         end,
         Explain = function(prt, params)
           local template = [[
-          Your task is to take the code snippet from {{filename}} and explain it with gradually increasing complexity.
-          Break down the code's functionality, purpose, and key components.
-          The goal is to help the reader understand what the code does and how it works.
+          Your task is to take the code snippet from {{filename}} and explain
+          it with gradually increasing complexity. Break down the code's
+          functionality, purpose, and key components. The goal is to help the
+          reader understand what the code does and how it works.
 
           ```{{filetype}}
           {{selection}}
@@ -201,9 +202,7 @@ return {
           Use the markdown format with codeblocks and inline code.
           Explanation of the code above:
           ]]
-          local model = prt.get_model "command"
-          prt.logger.info("Explaining selection with model: " .. model.name)
-          prt.Prompt(params, prt.ui.Target.new, model, nil, template)
+          prt.ChatNew(params, template)
         end,
         FixBugs = function(prt, params)
           local template = [[
