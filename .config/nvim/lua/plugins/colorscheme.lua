@@ -4,7 +4,7 @@ return {
     lazy = false,
     priority = 1000,
     opts = {
-      style = "storm",
+      style = "night",
       light_style = "day",
 
       transparent = false,
@@ -21,15 +21,6 @@ return {
         floats = "dark",
       },
 
-    on_highlights = function(hl, colors)
-      local blacker = "#16161e"
-
-      hl.Normal = { bg = blacker }
-      hl.NormalNC = { bg = blacker }
-      hl.NormalFloat = { bg = blacker }
-      hl.SignColumn = { bg = blacker }
-      hl.EndOfBuffer = { fg = blacker, bg = blacker }
-    end
     },
 
     config = function(_, opts)
