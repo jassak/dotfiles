@@ -1,9 +1,12 @@
+local actions = require('telescope.actions')
+
 return {
   {
     "nvim-telescope/telescope.nvim",
     cmd = "Telescope",
     dependencies = {
       "nvim-lua/plenary.nvim",
+      { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
     },
     keys = {
       -- General
@@ -73,6 +76,11 @@ return {
           mappings = {
             i = {
               ["<Esc>"] = actions.close,
+              ["<c-d>"] = actions.delete_buffer,
+            },
+            n = {
+              ["<c-d>"] = actions.delete_buffer,
+              ["dd"] = actions.delete_buffer,
             },
           },
         },
@@ -85,6 +93,10 @@ return {
           },
           lsp_document_symbols = {
             symbol_width = 50,
+          },
+          buffers = {
+            sort_lastused = true,
+            ignore_current_buffer = true,
           },
         },
       }
