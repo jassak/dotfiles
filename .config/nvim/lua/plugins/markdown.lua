@@ -20,9 +20,3 @@ return {
     "jghauser/follow-md-links.nvim",
     lazy = false,
   },
-
-  {
-    "dhruvasagar/vim-table-mode",
-    ft = { "markdown", "text" }, -- load only when needed
-  }
-}
