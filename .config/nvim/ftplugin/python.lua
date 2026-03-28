@@ -25,7 +25,10 @@ map("n", "<localleader>i", function()
 end, { buffer = true, silent = true, desc = "IPython module" })
 
 map("n", "<localleader>r", function()
-  open_term("python3 -i " .. vim.fn.expand("%"), vim.fn.expand("%:p:h"))
+  local file = vim.fn.expand("%:p")
+  local root = vim.fs.root(0, { ".git", "pyproject.toml", "setup.py", "setup.cfg" })
+  local mod = file_to_module(root, file)
+  open_term("python -m " .. mod, root)
 end, { buffer = true, silent = true, desc = "Run file in Python" })
 
 map("n", "<localleader>db", "Obreakpoint()<Esc>^", { buffer = true, desc = "Insert breakpoint" })
