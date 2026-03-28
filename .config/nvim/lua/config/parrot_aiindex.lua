@@ -48,39 +48,15 @@ end
 local function date_from_filename(name)
   local y, m, d = name:match("^(%d%d%d%d)%-(%d%d)%-(%d%d)")
   if y and m and d then
-    return string.format("%s-%s-%s", y, m, d)
+    return os.time{
+      year = tonumber(y),
+      month = tonumber(m),
+      day = tonumber(d),
+    }
   end
 
   local full_path = ai_dir .. "/" .. name
-  return os.date("%Y-%m-%d", vim.fn.getftime(full_path))
-end
-
-local function parse_ymd(date_str)
-  local y, m, d = date_str:match("^(%d%d%d%d)%-(%d%d)%-(%d%d)$")
-  if not y then
-    return nil
-  end
-  return {
-    year = tonumber(y),
-    month = tonumber(m),
-    day = tonumber(d),
-  }
-end
-
-local function ymd_to_time(date_str)
-  local p = parse_ymd(date_str)
-  if not p then
-    return nil
-  end
-
-  return os.time({
-    year = p.year,
-    month = p.month,
-    day = p.day,
-    hour = 0,
-    min = 0,
-    sec = 0,
-  })
+  return vim.fn.getftime(full_path)
 end
 
 local function topic_from_filename(name)
@@ -181,7 +157,7 @@ local function build_sections(entries)
   }
 
   for _, entry in ipairs(entries) do
-    local ts = ymd_to_time(entry.date)
+    local ts = entry.date
 
     if ts then
       if ts >= today_start then
@@ -191,7 +167,7 @@ local function build_sections(entries)
       elseif ts >= previous_30_days_threshold then
         table.insert(sections.previous_30_days, entry)
       else
-        local p = parse_ymd(entry.date)
+        local p = os.date("*t", entry.date)
         if p then
           sections.years[p.year] = sections.years[p.year] or {}
           sections.years[p.year][p.month] = sections.years[p.year][p.month] or {}
@@ -206,7 +182,7 @@ end
 
 local function append_entry_lines(out, entries)
   for _, entry in ipairs(entries) do
-    table.insert(out, string.format("[%s | %s](./%s)", entry.date, entry.topic, entry.name))
+    table.insert(out, string.format("[%s | %s](./%s)", os.date("%a %d %b %Y", entry.date), entry.topic, entry.name))
   end
   table.insert(out, "")
 end
