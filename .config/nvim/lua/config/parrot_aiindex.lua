@@ -1,6 +1,30 @@
 local M = {}
 
-local ai_dir = vim.fn.expand("~/ai")
+local mkdocs_job = nil
+
+vim.keymap.set('n', '<leader>aS', function()
+  if mkdocs_job then
+    vim.fn.jobstop(mkdocs_job)
+  end
+
+  mkdocs_job = vim.fn.jobstart('mkdocs serve', {
+    cwd = vim.fn.expand('~/ai'),
+  })
+
+  vim.defer_fn(function()
+    vim.fn.jobstart('open http://127.0.0.1:8000', { detach = true })
+  end, 2000)
+end, { desc = 'Serve mkdocs ai/' })
+
+vim.keymap.set('n', '<leader>aK', function()
+  if mkdocs_job then
+    vim.fn.jobstop(mkdocs_job)
+    mkdocs_job = nil
+  end
+end, { desc = 'Kill mkdocs server' })
+
+
+local ai_dir = vim.fn.expand("~/ai/docs")
 local index_file = ai_dir .. "/index.md"
 
 local MONTH_NAMES = {
@@ -182,7 +206,7 @@ end
 
 local function append_entry_lines(out, entries)
   for _, entry in ipairs(entries) do
-    table.insert(out, string.format("[%s | %s](./%s)", os.date("%a %d %b %Y", entry.date), entry.topic, entry.name))
+    table.insert(out, string.format("- `%s` [%s](./%s)", os.date("%a %d %b %Y", entry.date), entry.topic, entry.name))
   end
   table.insert(out, "")
 end

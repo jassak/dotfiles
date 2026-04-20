@@ -14,7 +14,7 @@ return {
       chat_user_prefix = "💬:",
       llm_prefix = "🤖:",
       user_input_ui = "buffer",
-      chat_dir = vim.fn.expand("~/ai/"),
+      chat_dir = vim.fn.expand("~/ai/docs/"),
 
       providers = {
 
