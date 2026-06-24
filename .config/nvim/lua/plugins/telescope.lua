@@ -88,6 +88,8 @@ return {
         pickers = {
           find_files = {
             hidden = true,
+            -- ripgrep respects .gitignore by default; show dotfiles but skip .git/
+            find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*" },
           },
           current_buffer_fuzzy_find = {
             previewer = false,
